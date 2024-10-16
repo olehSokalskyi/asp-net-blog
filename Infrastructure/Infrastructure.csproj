@@ -13,4 +13,11 @@
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Persistence\Configurations\" />
+      <Folder Include="Persistence\Converters\" />
+      <Folder Include="Persistence\Migrations\" />
+      <Folder Include="Persistence\Repositories\" />
+    </ItemGroup>
+
 </Project>
