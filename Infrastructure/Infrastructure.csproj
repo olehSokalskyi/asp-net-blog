@@ -15,7 +15,6 @@
 
     <ItemGroup>
       <Folder Include="Persistence\Configurations\" />
-      <Folder Include="Persistence\Converters\" />
       <Folder Include="Persistence\Migrations\" />
       <Folder Include="Persistence\Repositories\" />
     </ItemGroup>
