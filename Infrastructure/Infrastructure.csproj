@@ -11,12 +11,16 @@
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
+      <PackageReference Include="Optional" Version="4.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Persistence\Configurations\" />
       <Folder Include="Persistence\Migrations\" />
-      <Folder Include="Persistence\Repositories\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Application\Application.csproj" />
+      <ProjectReference Include="..\Domain\Domain.csproj" />
     </ItemGroup>
 
 </Project>
