@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241019210956_Add_Chat")]
-    partial class Add_Chat
+    [Migration("20241023152630_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -72,9 +72,46 @@ namespace Infrastructure.Persistence.Migrations
                         .HasDefaultValueSql("timezone('utc', now())");
 
                     b.HasKey("Id")
-                        .HasName("pk_chat");
+                        .HasName("pk_chats");
 
-                    b.ToTable("chat", (string)null);
+                    b.ToTable("chats", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Messages.Message", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("ChatId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("chat_id");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("content");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("timezone('utc', now())");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_messages");
+
+                    b.HasIndex("ChatId")
+                        .HasDatabaseName("ix_messages_chat_id");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_messages_user_id");
+
+                    b.ToTable("messages", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Users.User", b =>
@@ -113,7 +150,7 @@ namespace Infrastructure.Persistence.Migrations
                         .HasForeignKey("ChatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_chat_user_chat_chat_id");
+                        .HasConstraintName("fk_chat_user_chats_chat_id");
 
                     b.HasOne("Domain.Users.User", null)
                         .WithMany()
@@ -121,6 +158,37 @@ namespace Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_chat_user_users_user_id");
+                });
+
+            modelBuilder.Entity("Domain.Messages.Message", b =>
+                {
+                    b.HasOne("Domain.Chats.Chat", "Chat")
+                        .WithMany("Messages")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_messages_chats_chat_id");
+
+                    b.HasOne("Domain.Users.User", "User")
+                        .WithMany("Messages")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_messages_users_user_id");
+
+                    b.Navigation("Chat");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Chats.Chat", b =>
+                {
+                    b.Navigation("Messages");
+                });
+
+            modelBuilder.Entity("Domain.Users.User", b =>
+                {
+                    b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618
         }
