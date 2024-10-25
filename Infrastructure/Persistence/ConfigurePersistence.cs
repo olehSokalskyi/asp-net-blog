@@ -1,4 +1,5 @@
 ﻿using Application.Common.Interfaces;
+using Infrastructure.Persistence.Converters;
 using Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -26,6 +27,7 @@ public static class ConfigurePersistence
 
         services.AddScoped<ApplicationDbContextInitialiser>();
         services.AddRepositories();
+        services.AddServices();
     }
 
     private static void AddRepositories(this IServiceCollection services)
@@ -33,5 +35,9 @@ public static class ConfigurePersistence
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IChatRepository, ChatRepository>();
         services.AddScoped<IMessageRepository, MessageRepository>();
+    }
+    private static void AddServices(this IServiceCollection services)
+    {
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
     }
 }
