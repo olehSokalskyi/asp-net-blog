@@ -33,5 +33,6 @@ public static class ConfigurePersistence
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IChatRepository, ChatRepository>();
         services.AddScoped<IMessageRepository, MessageRepository>();
+        services.AddScoped<IGenderRepository, GenderRepository>();
     }
 }

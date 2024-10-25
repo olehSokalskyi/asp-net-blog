@@ -74,6 +74,23 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("chats", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Genders.Gender", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("title");
+
+                    b.HasKey("Id")
+                        .HasName("pk_genders");
+
+                    b.ToTable("genders", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Messages.Message", b =>
                 {
                     b.Property<Guid>("Id")

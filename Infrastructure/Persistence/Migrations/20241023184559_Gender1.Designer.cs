@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241023152630_Initial")]
-    partial class Initial
+    [Migration("20241023184559_Gender1")]
+    partial class Gender1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -75,6 +75,23 @@ namespace Infrastructure.Persistence.Migrations
                         .HasName("pk_chats");
 
                     b.ToTable("chats", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Genders.Gender", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("title");
+
+                    b.HasKey("Id")
+                        .HasName("pk_genders");
+
+                    b.ToTable("genders", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Messages.Message", b =>

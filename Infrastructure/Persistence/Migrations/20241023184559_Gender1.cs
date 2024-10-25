@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class Gender1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,6 +24,18 @@ namespace Infrastructure.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_chats", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "genders",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    title = table.Column<string>(type: "varchar(255)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_genders", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -112,6 +124,9 @@ namespace Infrastructure.Persistence.Migrations
         {
             migrationBuilder.DropTable(
                 name: "chat_user");
+
+            migrationBuilder.DropTable(
+                name: "genders");
 
             migrationBuilder.DropTable(
                 name: "messages");
