@@ -33,7 +33,7 @@ public class GendersController(ISender sender, IGenderQueries genderQueries) : C
             () => NotFound());
     }
     
-    [HttpGet]
+    [HttpGet("getByName/{title}")]
     public async Task<ActionResult<GenderDto>> GetByName(
         [FromRoute] string title, 
         CancellationToken cancellationToken)
@@ -80,7 +80,7 @@ public class GendersController(ISender sender, IGenderQueries genderQueries) : C
             e => e.ToObjectResult());
     }
     
-    [HttpDelete]
+    [HttpDelete("{genderId:guid}")]
     public async Task<ActionResult<GenderDto>> Delete(
         [FromRoute] Guid genderId, 
         CancellationToken cancellationToken)

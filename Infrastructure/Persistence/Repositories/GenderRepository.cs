@@ -1,11 +1,12 @@
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Queries;
 using Domain.Genders;
 using Microsoft.EntityFrameworkCore;
 using Optional;
 
 namespace Infrastructure.Persistence.Repositories;
 
-public class GenderRepository(ApplicationDbContext context) : IGenderRepository
+public class GenderRepository(ApplicationDbContext context) : IGenderRepository, IGenderQueries
 {
     public async Task<IReadOnlyList<Gender>> GetAll(CancellationToken cancellationToken)
     {
