@@ -1,6 +1,6 @@
 ﻿using Application.Chats.Exceptions;
 using Application.Common;
-using Application.Common.Interfaces;
+using Application.Common.Interfaces.Repositories;
 using Application.Users.Exceptions;
 using Domain.Chats;
 using Domain.Users;

@@ -1,4 +1,4 @@
-using Application.Common.Interfaces;
+using Application.Common.Interfaces.Repositories;
 using Application.Common.Interfaces.Queries;
 using Domain.Genders;
 using Microsoft.EntityFrameworkCore;

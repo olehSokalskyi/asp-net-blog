@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Domain.Categories;
 using Domain.Chats;
 using Domain.Genders;
 using Domain.Messages;
@@ -13,6 +14,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Chat> Chats { get; set; }
     public DbSet<Message> Messages { get; set; }
     public DbSet<Gender> Genders { get; set; }
+    public DbSet<Category> Categories { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
