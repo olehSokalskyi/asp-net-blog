@@ -25,4 +25,9 @@ public class UserIncorrectPasswordException(UserId id)
     : UserException(id, $"Incorrect password or email for the user under id: {id}");
 public class UserUnknownException(UserId id, Exception innerException)
     : UserException(id, $"Unknown exception for the user under id: {id}", innerException);
+
+public class UserPasswordSameAsCurrentException(UserId id)  
+    : UserException(id, $"New password is the same as the current password for the user under id: {id}");
+public class UserRoleNotFoundException(string roleName) 
+    : UserException(UserId.Empty(), $"Role with name: {roleName} not found");
     

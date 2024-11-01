@@ -31,5 +31,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
                 "ChatUser",
                 j => j.HasOne<Chat>().WithMany().HasForeignKey("ChatId"),
                 j => j.HasOne<User>().WithMany().HasForeignKey("UserId"));
+        builder.HasOne(x=> x.Role)
+            .WithMany()
+            .HasForeignKey(x=> x.RoleId)
+            .HasConstraintName("fk_users_roles_id")
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

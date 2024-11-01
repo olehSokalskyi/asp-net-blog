@@ -1,5 +1,6 @@
 ﻿using Domain.Chats;
 using Domain.Messages;
+using Domain.Roles;
 
 namespace Domain.Users;
 
@@ -16,9 +17,11 @@ public class User
     public DateTime CreatedAt { get; private set; }
     public List<Chat> Chats { get; private set; } = new();
     public List<Message> Messages { get; private set; } = new();
+    public RoleId RoleId { get; private set;}
+    public Role? Role { get; }
 
     private User(UserId id, string username, string firstName, string lastName, string email, string password,
-        DateTime createdAt)
+        DateTime createdAt, string profilePicture, RoleId roleId)
     {
         Id = id;
         Username = username;
@@ -28,10 +31,13 @@ public class User
         Password = password;
         CreatedAt = createdAt;
         UpdatedAt = createdAt;
+        ProfilePicture = profilePicture;
+        RoleId = roleId;
     }
 
-    public static User New(UserId id, string username, string firstName, string lastName, string email, string password)
-        => new(id, username, firstName, lastName, email, password, DateTime.UtcNow);
+    public static User New(UserId id, string username, string firstName, string lastName, string email, string password,
+        string profilePicture, RoleId roleId)
+        => new(id, username, firstName, lastName, email, password, DateTime.UtcNow, profilePicture, roleId);
 
     public void UpdateDetails(string username, string firstName, string lastName)
     {
@@ -57,5 +63,10 @@ public class User
     {
         Password = password;
         UpdatedAt = DateTime.UtcNow;
+    }
+    
+    public void ChangeRole(RoleId role)
+    {
+        RoleId = role;
     }
 }
