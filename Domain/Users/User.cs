@@ -65,7 +65,7 @@ public class User
         UpdatedAt = DateTime.UtcNow;
     }
     
-    public void ChangeRole(RoleId role)
+    public void UpdateRole(RoleId role)
     {
         RoleId = role;
     }

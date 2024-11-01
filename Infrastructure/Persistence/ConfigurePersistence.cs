@@ -39,6 +39,7 @@ public static class ConfigurePersistence
         services.AddScoped<IMessageRepository, MessageRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IUserQueries, UserRepository>();
+        services.AddScoped<IRoleQueries, RoleRepository>();
     }
     
     private static void AddServices(this IServiceCollection services)
