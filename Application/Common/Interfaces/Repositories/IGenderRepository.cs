@@ -1,7 +1,7 @@
 using Domain.Genders;
 using Optional;
 
-namespace Application.Common.Interfaces;
+namespace Application.Common.Interfaces.Repositories;
 
 public interface IGenderRepository
 {
