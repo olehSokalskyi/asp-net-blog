@@ -1,5 +1,6 @@
 ﻿using Application.Common;
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Repositories;
 using Application.Users.Exceptions;
 using Domain.Roles;
 using Domain.Users;

@@ -60,7 +60,7 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
             u => UserDto.FromDomainModel(u),
             e => e.ToObjectResult());
     }
-
+    [Authorize]
     [HttpPut("update-data")]
     public async Task<ActionResult<UserDto>> UpdateData([FromBody] UserDto userDto, CancellationToken cancellationToken)
     {
@@ -80,12 +80,14 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
             u => UserDto.FromDomainModel(u),
             e => e.ToObjectResult());
     }
+    [Authorize]
     [HttpPut("update-password")]
     public async Task<ActionResult<UserDto>> UpdatePassword([FromBody] UserUpdatePasswordDto userUpdatePasswordDto, CancellationToken cancellationToken)
     {
         var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
         var claims = jwtDecoder.DecodeToken(token);
         var userIdClaim = claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
+        
         var input = new UpdateUserPasswordCommand
         {
             UserId = Guid.Parse(userIdClaim),
@@ -97,7 +99,7 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
             u => UserDto.FromDomainModel(u),
             e => e.ToObjectResult());
     }
-
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<ActionResult<UserDto>> Delete(Guid id, CancellationToken cancellationToken)
     {

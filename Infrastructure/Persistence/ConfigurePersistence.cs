@@ -1,6 +1,6 @@
 ﻿using Application.Common.Interfaces;
 using Application.Common.Interfaces.Queries;
-using Infrastructure.Authentication;
+using Application.Common.Interfaces.Repositories;
 using Infrastructure.Persistence.Converters;
 using Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -44,5 +44,12 @@ public static class ConfigurePersistence
     private static void AddServices(this IServiceCollection services)
     {
         services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<IGenderRepository, GenderRepository>();
+
+        services.AddScoped<IGenderQueries, GenderRepository>();
+        
+        services.AddScoped<CategoryRepository>();
+        services.AddScoped<ICategoryRepository>(provider => provider.GetRequiredService<CategoryRepository>());
+        services.AddScoped<ICategoryQueries>(provider => provider.GetRequiredService<CategoryRepository>());
     }
 }

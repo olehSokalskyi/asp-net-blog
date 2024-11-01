@@ -68,9 +68,10 @@ if (app.Environment.IsDevelopment())
 }
 
 await app.InitialiseDb();
-app.UseMiddleware<RoleMiddleware>();
 
 app.MapControllers();
 app.UseAuthentication();
 app.UseAuthorization();
 app.Run();
+
+public partial class Program;
