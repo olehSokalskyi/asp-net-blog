@@ -50,3 +50,8 @@ public record UserLoginDto(
     string email,
     string Password
 );
+
+public record UserUpdateRoleDto(
+    Guid RoleId,
+    Guid UserId
+);

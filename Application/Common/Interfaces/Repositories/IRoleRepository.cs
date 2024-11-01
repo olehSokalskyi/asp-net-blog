@@ -9,4 +9,5 @@ public interface IRoleRepository
     Task<Role> Add(Role role, CancellationToken cancellationToken);
     Task<Role> Update(Role role, CancellationToken cancellationToken);
     Task<Role> Delete(Role role, CancellationToken cancellationToken);
+    Task<Option<Role>> GetById(RoleId id, CancellationToken cancellationToken);
 }

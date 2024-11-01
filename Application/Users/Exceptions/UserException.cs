@@ -1,4 +1,5 @@
-﻿using Domain.Users;
+﻿using Domain.Roles;
+using Domain.Users;
 
 namespace Application.Users.Exceptions;
 
@@ -30,4 +31,7 @@ public class UserPasswordSameAsCurrentException(UserId id)
     : UserException(id, $"New password is the same as the current password for the user under id: {id}");
 public class UserRoleNotFoundException(string roleName) 
     : UserException(UserId.Empty(), $"Role with name: {roleName} not found");
+    
+public class UserRoleNotFoundExceptionById(RoleId roleId):
+    UserException(UserId.Empty(), $"Role with id: {roleId} not found");
     

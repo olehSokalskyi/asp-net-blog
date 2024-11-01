@@ -127,4 +127,19 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
             u => Ok(u),
             e => e.ToObjectResult());
     }
+    [Authorize(Roles="Admin")]
+    [HttpPut("update-role")]
+    public async Task<ActionResult<UserDto>> UpdateRole([FromBody] UserUpdateRoleDto userUpdateRoleDto,
+        CancellationToken cancellationToken)
+    {
+        var input = new UpdateUserRoleCommand
+        {
+            RoleId = userUpdateRoleDto.RoleId,
+            UserId = userUpdateRoleDto.UserId
+        };
+        var result = await sender.Send(input, cancellationToken);
+        return result.Match<ActionResult<UserDto>>(
+            u => UserDto.FromDomainModel(u),
+            e => e.ToObjectResult());
+    }
 }

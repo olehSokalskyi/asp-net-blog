@@ -1,11 +1,12 @@
 ﻿using Application.Common.Interfaces;
+using Application.Common.Interfaces.Queries;
 using Domain.Roles;
 using Microsoft.EntityFrameworkCore;
 using Optional;
 
 namespace Infrastructure.Persistence.Repositories;
 
-public class RoleRepository(ApplicationDbContext context): IRoleRepository
+public class RoleRepository(ApplicationDbContext context) : IRoleRepository, IRoleQueries
 {
     public async Task<IReadOnlyList<Role>> GetAll(CancellationToken cancellationToken)
     {
@@ -13,12 +14,13 @@ public class RoleRepository(ApplicationDbContext context): IRoleRepository
             .AsNoTracking()
             .ToListAsync(cancellationToken);
     }
+
     public async Task<Option<Role>> GetByName(string name, CancellationToken cancellationToken)
     {
         var entity = await context.Roles
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Name == name, cancellationToken);
-        
+
         return entity == null ? Option.None<Role>() : Option.Some(entity);
     }
 
@@ -46,5 +48,14 @@ public class RoleRepository(ApplicationDbContext context): IRoleRepository
         await context.SaveChangesAsync(cancellationToken);
 
         return role;
+    }
+
+    public async Task<Option<Role>> GetById(RoleId id, CancellationToken cancellationToken)
+    {
+        var entity = await context.Roles
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+
+        return entity == null ? Option.None<Role>() : Option.Some(entity);
     }
 }
