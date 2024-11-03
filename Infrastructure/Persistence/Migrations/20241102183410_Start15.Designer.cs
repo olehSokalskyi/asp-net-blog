@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241102183410_Start15")]
+    partial class Start15
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -89,31 +92,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasName("pk_genders");
 
                     b.ToTable("genders", (string)null);
-                });
-
-            modelBuilder.Entity("Domain.Likes.Like", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("timezone('utc', now())");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("Id")
-                        .HasName("pk_likes");
-
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_likes_user_id");
-
-                    b.ToTable("likes", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Messages.Message", b =>
@@ -199,18 +177,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasConstraintName("fk_chat_user_users_user_id");
                 });
 
-            modelBuilder.Entity("Domain.Likes.Like", b =>
-                {
-                    b.HasOne("Domain.Users.User", "User")
-                        .WithMany("Likes")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_likes_users_user_id");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Domain.Messages.Message", b =>
                 {
                     b.HasOne("Domain.Chats.Chat", "Chat")
@@ -239,8 +205,6 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Users.User", b =>
                 {
-                    b.Navigation("Likes");
-
                     b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618

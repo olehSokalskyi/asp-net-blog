@@ -1,4 +1,5 @@
 ﻿using Domain.Chats;
+using Domain.Likes;
 using Domain.Messages;
 
 namespace Domain.Users;
@@ -11,6 +12,7 @@ public class User
     public DateTime CreatedAt { get; private set; }
     public List<Chat> Chats { get; private set; } = new();
     public List<Message> Messages { get; private set; } = new();
+    public List<Like> Likes { get; private set; } = new();
 
     private User(UserId id, string username, DateTime createdAt)
     {
