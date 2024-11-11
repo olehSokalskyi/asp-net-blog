@@ -55,3 +55,6 @@ public record UserUpdateRoleDto(
     Guid RoleId,
     Guid UserId
 );
+public record TokenDto(
+    string Token
+);
