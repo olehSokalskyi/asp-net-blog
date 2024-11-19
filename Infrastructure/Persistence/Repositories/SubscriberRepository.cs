@@ -40,7 +40,6 @@ public class SubscriberRepository(ApplicationDbContext context) : ISubscriberRep
             .Where(s => s.FollowUserId == followUserId)
             .ToListAsync(cancellationToken);
     }
-
     
     public async Task<Subscriber> Add(Subscriber subscriber, CancellationToken cancellationToken)
     {
