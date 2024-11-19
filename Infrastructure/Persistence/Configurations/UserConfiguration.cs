@@ -4,8 +4,6 @@ using Infrastructure.Persistence.Converters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Persistence.Configurations;
-
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
@@ -22,7 +20,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(x => x.CreatedAt)
             .HasConversion(new DateTimeUtcConverter())
             .HasDefaultValueSql("timezone('utc', now())");
-        builder.Property(x=> x.UpdatedAt)
+        builder.Property(x => x.UpdatedAt)
             .HasConversion(new DateTimeUtcConverter())
             .HasDefaultValueSql("timezone('utc', now())");
         builder.HasMany(x => x.Chats)
@@ -31,10 +29,15 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
                 "ChatUser",
                 j => j.HasOne<Chat>().WithMany().HasForeignKey("ChatId"),
                 j => j.HasOne<User>().WithMany().HasForeignKey("UserId"));
-        builder.HasOne(x=> x.Role)
+        builder.HasOne(x => x.Role)
             .WithMany()
-            .HasForeignKey(x=> x.RoleId)
+            .HasForeignKey(x => x.RoleId)
             .HasConstraintName("fk_users_roles_id")
+            .OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne(x => x.Gender)
+            .WithMany()
+            .HasForeignKey(x => x.GenderId)
+            .HasConstraintName("fk_users_genders_id")
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

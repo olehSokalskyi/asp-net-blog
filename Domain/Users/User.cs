@@ -1,4 +1,5 @@
 ﻿using Domain.Chats;
+using Domain.Genders;
 using Domain.Likes;
 using Domain.Messages;
 using Domain.Roles;
@@ -22,11 +23,14 @@ public class User
     public List<Like> Likes { get; private set; } = new();
     public RoleId RoleId { get; private set;}
     public Role? Role { get; }
+    public GenderId GenderId { get; private set; }
+    public Gender? Gender { get; }
     public List<Subscriber> Subscribers { get; private set; } = new();
     public List<Subscriber> Followers { get; private set; } = new();
+     
 
     private User(UserId id, string username, string firstName, string lastName, string email, string password,
-        DateTime createdAt, string profilePicture, RoleId roleId)
+        DateTime createdAt, string profilePicture, RoleId roleId, GenderId genderId)
     {
         Id = id;
         Username = username;
@@ -38,18 +42,20 @@ public class User
         UpdatedAt = createdAt;
         ProfilePicture = profilePicture;
         RoleId = roleId;
+        GenderId = genderId;
     }
 
     public static User New(UserId id, string username, string firstName, string lastName, string email, string password,
-        string profilePicture, RoleId roleId)
-        => new(id, username, firstName, lastName, email, password, DateTime.UtcNow, profilePicture, roleId);
+        string profilePicture, RoleId roleId, GenderId genderId)
+        => new(id, username, firstName, lastName, email, password, DateTime.UtcNow, profilePicture, roleId, genderId);
 
-    public void UpdateDetails(string username, string firstName, string lastName)
+    public void UpdateDetails(string username, string firstName, string lastName, GenderId genderId)
     {
         Username = username;
         FirstName = firstName;
         LastName = lastName;
-        UpdatedAt = DateTime.UtcNow;
+        UpdatedAt = DateTime.UtcNow; 
+        GenderId = genderId;
     }
 
     public void UpdateProfilePicture(string profilePicture)
