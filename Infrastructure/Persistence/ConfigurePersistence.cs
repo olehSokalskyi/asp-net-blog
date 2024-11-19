@@ -53,5 +53,9 @@ public static class ConfigurePersistence
         services.AddScoped<CategoryRepository>();
         services.AddScoped<ICategoryRepository>(provider => provider.GetRequiredService<CategoryRepository>());
         services.AddScoped<ICategoryQueries>(provider => provider.GetRequiredService<CategoryRepository>());
+        
+        services.AddScoped<PostRepository>();
+        services.AddScoped<IPostRepository>(provider => provider.GetRequiredService<PostRepository>());
+        services.AddScoped<IPostQueries>(provider => provider.GetRequiredService<PostRepository>());
     }
 }

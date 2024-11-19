@@ -1,5 +1,4 @@
 ﻿using Domain.Categories;
-using Domain.Users;
 
 namespace Application.Categories.Exceptions;
 
