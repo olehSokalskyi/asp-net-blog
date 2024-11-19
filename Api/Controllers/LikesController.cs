@@ -1,9 +1,7 @@
 using Api.Dtos;
 using Api.Modules.Errors;
 using Application.Common.Interfaces.Queries;
-using Application.Genders.Commands;
 using Application.Likes.Commands;
-using Domain.Genders;
 using Domain.Likes;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

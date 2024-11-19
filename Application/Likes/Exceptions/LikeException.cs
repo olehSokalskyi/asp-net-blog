@@ -1,5 +1,5 @@
-using Application.Messages.Exceptions;
 using Domain.Likes;
+using Domain.Posts;
 using Domain.Users;
 
 namespace Application.Likes.Exceptions;
@@ -20,5 +20,5 @@ public class LikeUnknownException(LikeId id, Exception innerException)
 public class LikeUserNotFoundException(UserId userId)
     : LikeException(LikeId.Empty(), $"User under id:{userId} not found");
 
-/*public class LikePostNotFoundException(PostId postId)
-    : LikeException(LikeId.Empty(), $"Post under id:{postId} not found");*/
+public class LikePostNotFoundException(PostId postId)
+    : LikeException(LikeId.Empty(), $"Post under id:{postId} not found");
