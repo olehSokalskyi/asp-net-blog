@@ -40,14 +40,15 @@ public static class ConfigurePersistence
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IUserQueries, UserRepository>();
         services.AddScoped<IRoleQueries, RoleRepository>();
+        services.AddScoped<IGenderRepository, GenderRepository>();
+        services.AddScoped<IGenderQueries, GenderRepository>();
+        services.AddScoped<ISubscriberRepository, SubscriberRepository>();
+        services.AddScoped<ISubscriberQueries, SubscriberRepository>();
     }
     
     private static void AddServices(this IServiceCollection services)
     {
         services.AddScoped<IPasswordHasher, PasswordHasher>();
-        services.AddScoped<IGenderRepository, GenderRepository>();
-
-        services.AddScoped<IGenderQueries, GenderRepository>();
         
         services.AddScoped<CategoryRepository>();
         services.AddScoped<ICategoryRepository>(provider => provider.GetRequiredService<CategoryRepository>());

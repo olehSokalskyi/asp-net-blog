@@ -174,6 +174,38 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("roles", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Subscribers.Subscriber", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("timezone('utc', now())");
+
+                    b.Property<Guid>("FollowUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("follow_user_id");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_subscribers");
+
+                    b.HasIndex("FollowUserId")
+                        .HasDatabaseName("ix_subscribers_follow_user_id");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_subscribers_user_id");
+
+                    b.ToTable("subscribers", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Users.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -277,6 +309,27 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Domain.Subscribers.Subscriber", b =>
+                {
+                    b.HasOne("Domain.Users.User", "FollowUser")
+                        .WithMany("Followers")
+                        .HasForeignKey("FollowUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_subscribers_users_follow_user_id");
+
+                    b.HasOne("Domain.Users.User", "User")
+                        .WithMany("Subscribers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_subscribers_users_user_id");
+
+                    b.Navigation("FollowUser");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.Users.User", b =>
                 {
                     b.HasOne("Domain.Roles.Role", "Role")
@@ -296,7 +349,11 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Users.User", b =>
                 {
+                    b.Navigation("Followers");
+
                     b.Navigation("Messages");
+
+                    b.Navigation("Subscribers");
                 });
 #pragma warning restore 612, 618
         }
