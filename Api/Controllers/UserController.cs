@@ -33,7 +33,8 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
             FirstName = userDto.FirstName,
             LastName = userDto.LastName,
             Password = userDto.Password,
-            Username = userDto.Username
+            Username = userDto.Username,
+            GenderId = userDto.GenderId
         };
         var result = await sender.Send(input, cancellationToken);
         return result.Match<ActionResult<UserDto>>(
@@ -74,7 +75,8 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
             UserId = Guid.Parse(userIdClaim),
             Username = userDto.Username,
             FirstName = userDto.FirstName,
-            LastName = userDto.LastName
+            LastName = userDto.LastName,
+            GenderId = userDto.GenderId.Value
         };
         var result = await sender.Send(input, cancellationToken);
         return result.Match<ActionResult<UserDto>>(

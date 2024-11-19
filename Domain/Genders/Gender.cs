@@ -6,7 +6,6 @@ public class Gender
 {
     public GenderId Id { get; }
     public string Title { get; private set; }
-    public List<User> Users { get; private set; } = new();
 
     private Gender(GenderId id, string title)
     {
