@@ -41,6 +41,8 @@ public static class ConfigurePersistence
         services.AddScoped<IUserQueries, UserRepository>();
         services.AddScoped<IRoleQueries, RoleRepository>();
         services.AddScoped<IGenderRepository, GenderRepository>();
+        services.AddScoped<ILikeRepository, LikeRepository>();
+        services.AddScoped<ILikeQueries, LikeRepository>();
         services.AddScoped<IGenderQueries, GenderRepository>();
         services.AddScoped<ISubscriberRepository, SubscriberRepository>();
         services.AddScoped<ISubscriberQueries, SubscriberRepository>();

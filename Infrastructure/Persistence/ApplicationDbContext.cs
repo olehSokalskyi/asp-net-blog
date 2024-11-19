@@ -2,6 +2,7 @@
 using Domain.Categories;
 using Domain.Chats;
 using Domain.Genders;
+using Domain.Likes;
 using Domain.Messages;
 using Domain.Posts;
 using Domain.Roles;
@@ -21,7 +22,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Category> Categories { get; set; }
     public DbSet<Post> Posts { get; set; }
     public DbSet<Subscriber> Subscribers { get; set; }
-
+    public DbSet<Like> Likes { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
