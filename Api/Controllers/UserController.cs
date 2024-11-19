@@ -23,7 +23,6 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
         var entities = await userQueries.GetAll(cancellationToken);
         return entities.Select(UserDto.FromDomainModel).ToList();
     }
-    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<ActionResult<UserDto>> Add([FromBody] CreateUserDto userDto, CancellationToken cancellationToken)
     {
