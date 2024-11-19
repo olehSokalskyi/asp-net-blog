@@ -30,7 +30,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Pool", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Blog", Version = "v1" });
     c.AddSecurityDefinition("Bearer",
         new OpenApiSecurityScheme
         {
@@ -53,6 +53,7 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
 builder.Services.AddControllers();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
