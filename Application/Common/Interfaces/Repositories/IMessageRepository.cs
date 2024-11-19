@@ -1,6 +1,6 @@
 ﻿using Domain.Messages;
 
-namespace Application.Common.Interfaces;
+namespace Application.Common.Interfaces.Repositories;
 
 public interface IMessageRepository
 {

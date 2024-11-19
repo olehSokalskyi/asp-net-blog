@@ -1,5 +1,5 @@
 ﻿using Application.Common;
-using Application.Common.Interfaces;
+using Application.Common.Interfaces.Repositories;
 using Application.Messages.Exceptions;
 using Domain.Chats;
 using Domain.Messages;

@@ -1,5 +1,7 @@
 ﻿using Application.Common.Interfaces;
 using Application.Common.Interfaces.Queries;
+using Application.Common.Interfaces.Repositories;
+using Infrastructure.Persistence.Converters;
 using Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -27,6 +29,7 @@ public static class ConfigurePersistence
 
         services.AddScoped<ApplicationDbContextInitialiser>();
         services.AddRepositories();
+        services.AddServices();
     }
 
     private static void AddRepositories(this IServiceCollection services)
@@ -34,10 +37,28 @@ public static class ConfigurePersistence
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IChatRepository, ChatRepository>();
         services.AddScoped<IMessageRepository, MessageRepository>();
+        services.AddScoped<IRoleRepository, RoleRepository>();
+        services.AddScoped<IUserQueries, UserRepository>();
+        services.AddScoped<IRoleQueries, RoleRepository>();
         services.AddScoped<IGenderRepository, GenderRepository>();
         services.AddScoped<ILikeRepository, LikeRepository>();
 
         services.AddScoped<IGenderQueries, GenderRepository>();
+        services.AddScoped<ISubscriberRepository, SubscriberRepository>();
+        services.AddScoped<ISubscriberQueries, SubscriberRepository>();
+    }
+    
+    private static void AddServices(this IServiceCollection services)
+    {
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
+        
+        services.AddScoped<CategoryRepository>();
+        services.AddScoped<ICategoryRepository>(provider => provider.GetRequiredService<CategoryRepository>());
+        services.AddScoped<ICategoryQueries>(provider => provider.GetRequiredService<CategoryRepository>());
+        
+        services.AddScoped<PostRepository>();
+        services.AddScoped<IPostRepository>(provider => provider.GetRequiredService<PostRepository>());
+        services.AddScoped<IPostQueries>(provider => provider.GetRequiredService<PostRepository>());
         services.AddScoped<ILikeQueries, LikeRepository>();
     }
 }

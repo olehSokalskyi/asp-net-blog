@@ -12,6 +12,20 @@ namespace Infrastructure.Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "categories",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    name = table.Column<string>(type: "varchar(255)", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "timezone('utc', now())"),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "timezone('utc', now())")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_categories", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "chats",
                 columns: table => new
                 {
@@ -39,17 +53,41 @@ namespace Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "roles",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    name = table.Column<string>(type: "varchar(255)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_roles", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "users",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     username = table.Column<string>(type: "varchar(255)", nullable: false),
+                    first_name = table.Column<string>(type: "varchar(255)", nullable: false),
+                    last_name = table.Column<string>(type: "varchar(255)", nullable: false),
+                    email = table.Column<string>(type: "varchar(255)", nullable: false),
+                    password = table.Column<string>(type: "varchar(255)", nullable: false),
+                    profile_picture = table.Column<string>(type: "varchar(255)", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "timezone('utc', now())"),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "timezone('utc', now())")
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "timezone('utc', now())"),
+                    role_id = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_users", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_users_roles_id",
+                        column: x => x.role_id,
+                        principalTable: "roles",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -103,6 +141,32 @@ namespace Infrastructure.Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "subscribers",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    follow_user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "timezone('utc', now())")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_subscribers", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_subscribers_users_follow_user_id",
+                        column: x => x.follow_user_id,
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_subscribers_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "ix_chat_user_user_id",
                 table: "chat_user",
@@ -117,11 +181,35 @@ namespace Infrastructure.Persistence.Migrations
                 name: "ix_messages_user_id",
                 table: "messages",
                 column: "user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_subscribers_follow_user_id",
+                table: "subscribers",
+                column: "follow_user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_subscribers_user_id",
+                table: "subscribers",
+                column: "user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_users_email",
+                table: "users",
+                column: "email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_users_role_id",
+                table: "users",
+                column: "role_id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "categories");
+
             migrationBuilder.DropTable(
                 name: "chat_user");
 
@@ -132,10 +220,16 @@ namespace Infrastructure.Persistence.Migrations
                 name: "messages");
 
             migrationBuilder.DropTable(
+                name: "subscribers");
+
+            migrationBuilder.DropTable(
                 name: "chats");
 
             migrationBuilder.DropTable(
                 name: "users");
+
+            migrationBuilder.DropTable(
+                name: "roles");
         }
     }
 }
