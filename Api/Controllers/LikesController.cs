@@ -3,6 +3,8 @@ using Api.Modules.Errors;
 using Application.Common.Interfaces.Queries;
 using Application.Likes.Commands;
 using Domain.Likes;
+using Domain.Posts;
+using Domain.Users;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,6 +33,24 @@ public class LikesController(ISender sender, ILikeQueries likeQueries) : Control
         return entity.Match<ActionResult<LikeDto>>(
             l => LikeDto.FromDomainModel(l),
             () => NotFound());
+    }
+    
+    [HttpGet("user/{userId:guid}")]
+    public async Task<ActionResult<IReadOnlyList<LikeDto>>> GetByUserId(
+        [FromRoute] Guid userId, 
+        CancellationToken cancellationToken)
+    {
+        var entities = await likeQueries.GetByUserId(new UserId(userId), cancellationToken);
+        return entities.Select(LikeDto.FromDomainModel).ToList();
+    }
+
+    [HttpGet("post/{postId:guid}")]
+    public async Task<ActionResult<IReadOnlyList<LikeDto>>> GetByPostId(
+        [FromRoute] Guid postId, 
+        CancellationToken cancellationToken)
+    {
+        var entities = await likeQueries.GetByPostId(new PostId(postId), cancellationToken);
+        return entities.Select(LikeDto.FromDomainModel).ToList();
     }
 
     [HttpPost]

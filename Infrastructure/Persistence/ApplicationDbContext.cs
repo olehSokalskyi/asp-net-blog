@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Domain.ArchivedPosts;
 using Domain.Categories;
 using Domain.Chats;
 using Domain.Genders;
@@ -23,6 +24,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Post> Posts { get; set; }
     public DbSet<Subscriber> Subscribers { get; set; }
     public DbSet<Like> Likes { get; set; }
+    public DbSet<ArchivedPost> ArchivedPosts { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

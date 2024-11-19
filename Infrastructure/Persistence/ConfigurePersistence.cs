@@ -46,6 +46,8 @@ public static class ConfigurePersistence
         services.AddScoped<IGenderQueries, GenderRepository>();
         services.AddScoped<ISubscriberRepository, SubscriberRepository>();
         services.AddScoped<ISubscriberQueries, SubscriberRepository>();
+        services.AddScoped<IArchivedPostRepository, ArchivedPostRepository>();
+        services.AddScoped<IArchivedPostQueries, ArchivedPostRepository>();
     }
     
     private static void AddServices(this IServiceCollection services)
