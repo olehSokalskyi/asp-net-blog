@@ -1,6 +1,7 @@
 ﻿using Domain.Chats;
 using Domain.Messages;
 using Domain.Roles;
+using Domain.Subscribers;
 
 namespace Domain.Users;
 
@@ -19,6 +20,8 @@ public class User
     public List<Message> Messages { get; private set; } = new();
     public RoleId RoleId { get; private set;}
     public Role? Role { get; }
+    public List<Subscriber> Subscribers { get; private set; } = new();
+    public List<Subscriber> Followers { get; private set; } = new();
 
     private User(UserId id, string username, string firstName, string lastName, string email, string password,
         DateTime createdAt, string profilePicture, RoleId roleId)

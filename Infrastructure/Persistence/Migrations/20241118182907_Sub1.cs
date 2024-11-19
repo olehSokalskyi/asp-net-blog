@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class Sub1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -141,6 +141,32 @@ namespace Infrastructure.Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "subscribers",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    follow_user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "timezone('utc', now())")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_subscribers", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_subscribers_users_follow_user_id",
+                        column: x => x.follow_user_id,
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_subscribers_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "ix_chat_user_user_id",
                 table: "chat_user",
@@ -154,6 +180,16 @@ namespace Infrastructure.Persistence.Migrations
             migrationBuilder.CreateIndex(
                 name: "ix_messages_user_id",
                 table: "messages",
+                column: "user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_subscribers_follow_user_id",
+                table: "subscribers",
+                column: "follow_user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_subscribers_user_id",
+                table: "subscribers",
                 column: "user_id");
 
             migrationBuilder.CreateIndex(
@@ -182,6 +218,9 @@ namespace Infrastructure.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "messages");
+
+            migrationBuilder.DropTable(
+                name: "subscribers");
 
             migrationBuilder.DropTable(
                 name: "chats");
