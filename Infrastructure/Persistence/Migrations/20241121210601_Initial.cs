@@ -84,10 +84,11 @@ namespace Infrastructure.Persistence.Migrations
                 {
                     table.PrimaryKey("pk_users", x => x.id);
                     table.ForeignKey(
-                        name: "fk_users_genders_gender_id",
+                        name: "fk_users_genders_id",
                         column: x => x.gender_id,
                         principalTable: "genders",
-                        principalColumn: "id");
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "fk_users_roles_id",
                         column: x => x.role_id,

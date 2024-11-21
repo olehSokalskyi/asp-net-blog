@@ -16,7 +16,6 @@ public record CreateUserCommand : IRequest<Result<User, UserException>>
     public required string LastName { get; init; }
     public required string Email { get; init; }
     public required string Password { get; init; }
-    public required Guid GenderId { get; init; }
 }
 
 public class CreateUserCommandHandler(
@@ -36,30 +35,22 @@ public class CreateUserCommandHandler(
             return await role.Match(
                 async r =>
                 {
-                    var gender = await genderRepository.GetById(new GenderId(request.GenderId), cancellationToken);
-                    return await gender.Match(
-                        async g =>
-                        {
-                            var existingUserEmail = await userRepository.GetByEmail(request.Email, cancellationToken);
+                    
+                var existingUserEmail = await userRepository.GetByEmail(request.Email, cancellationToken);
 
-                            return await existingUserEmail.Match(
-                                u => Task.FromResult<Result<User, UserException>>(
-                                    new UserWithEmailAlreadyExistsException(u.Email)),
-                                async () =>
-                                {
-                                    var existingUserUserName =
-                                        await userRepository.GetByUsername(request.Username, cancellationToken);
-                                    return await existingUserUserName.Match(
-                                        u => Task.FromResult<Result<User, UserException>>(
-                                            new UserWithUsernameAlreadyExistsException(u.Username)),
-                                        async () => await CreateEntity(request.Username, request.FirstName, request.LastName,
-                                            request.Email, request.Password, r,g, cancellationToken));
-                                }
-                            );
-                        },
-                        () => Task.FromResult<Result<User, UserException>>(new GenderNotFoundException(new GenderId(request.GenderId)))
-                    );
-
+                return await existingUserEmail.Match(
+                    u => Task.FromResult<Result<User, UserException>>(
+                        new UserWithEmailAlreadyExistsException(u.Email)),
+                    async () =>
+                    {
+                        var existingUserUserName =
+                            await userRepository.GetByUsername(request.Username, cancellationToken);
+                        return await existingUserUserName.Match(
+                            u => Task.FromResult<Result<User, UserException>>(
+                                new UserWithUsernameAlreadyExistsException(u.Username)),
+                            async () => await CreateEntity(request.Username, request.FirstName, request.LastName,
+                                request.Email, request.Password, r, cancellationToken));
+                    });
                 },
                 () => Task.FromResult<Result<User, UserException>>(new UserRoleNotFoundException("User")));
         }
@@ -76,7 +67,6 @@ public class CreateUserCommandHandler(
         string email,
         string password,
         Role role,
-        Gender gender,
         CancellationToken cancellationToken)
     {
         try
@@ -84,7 +74,7 @@ public class CreateUserCommandHandler(
             var hashedPassword = passwordHasher.HashPassword(password);
 
 
-            var entity = User.New(UserId.New(), username, firstName, lastName, email, hashedPassword, "", role.Id, gender.Id);
+            var entity = User.New(UserId.New(), username, firstName, lastName, email, hashedPassword, "", role.Id);
 
             return await userRepository.Add(entity, cancellationToken);
         }

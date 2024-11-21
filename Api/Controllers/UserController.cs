@@ -33,8 +33,7 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
             FirstName = userDto.FirstName,
             LastName = userDto.LastName,
             Password = userDto.Password,
-            Username = userDto.Username,
-            GenderId = userDto.GenderId
+            Username = userDto.Username
         };
         var result = await sender.Send(input, cancellationToken);
         return result.Match<ActionResult<UserDto>>(

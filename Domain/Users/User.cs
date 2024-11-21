@@ -23,14 +23,14 @@ public class User
     public List<Like> Likes { get; private set; } = new();
     public RoleId RoleId { get; private set;}
     public Role? Role { get; }
-    public GenderId GenderId { get; private set; }
+    public GenderId? GenderId { get; private set; }
     public Gender? Gender { get; }
     public List<Subscriber> Subscribers { get; private set; } = new();
     public List<Subscriber> Followers { get; private set; } = new();
      
 
     private User(UserId id, string username, string firstName, string lastName, string email, string password,
-        DateTime createdAt, string profilePicture, RoleId roleId, GenderId genderId)
+        DateTime createdAt, string profilePicture, RoleId roleId)
     {
         Id = id;
         Username = username;
@@ -42,12 +42,11 @@ public class User
         UpdatedAt = createdAt;
         ProfilePicture = profilePicture;
         RoleId = roleId;
-        GenderId = genderId;
     }
 
     public static User New(UserId id, string username, string firstName, string lastName, string email, string password,
-        string profilePicture, RoleId roleId, GenderId genderId)
-        => new(id, username, firstName, lastName, email, password, DateTime.UtcNow, profilePicture, roleId, genderId);
+        string profilePicture, RoleId roleId)
+        => new(id, username, firstName, lastName, email, password, DateTime.UtcNow, profilePicture, roleId);
 
     public void UpdateDetails(string username, string firstName, string lastName, GenderId genderId)
     {

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241119192136_Initial")]
+    [Migration("20241121210601_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -480,10 +480,11 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Users.User", b =>
                 {
-                    b.HasOne("Domain.Genders.Gender", null)
-                        .WithMany("Users")
+                    b.HasOne("Domain.Genders.Gender", "Gender")
+                        .WithMany()
                         .HasForeignKey("GenderId")
-                        .HasConstraintName("fk_users_genders_gender_id");
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_users_genders_id");
 
                     b.HasOne("Domain.Roles.Role", "Role")
                         .WithMany()
@@ -492,17 +493,14 @@ namespace Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_users_roles_id");
 
+                    b.Navigation("Gender");
+
                     b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Domain.Chats.Chat", b =>
                 {
                     b.Navigation("Messages");
-                });
-
-            modelBuilder.Entity("Domain.Genders.Gender", b =>
-                {
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Domain.Posts.Post", b =>
