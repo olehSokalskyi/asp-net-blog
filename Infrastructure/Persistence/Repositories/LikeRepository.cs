@@ -1,6 +1,8 @@
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Queries;
 using Domain.Likes;
+using Domain.Posts;
+using Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using Optional;
 
@@ -22,6 +24,22 @@ public class LikeRepository(ApplicationDbContext context) : ILikeRepository, ILi
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
         return entity == null ? Option.None<Like>() : Option.Some(entity);
+    }
+    
+    public async Task<IReadOnlyList<Like>> GetByUserId(UserId userId, CancellationToken cancellationToken)
+    {
+        return await context.Likes
+            .AsNoTracking()
+            .Where(s => s.UserId == userId)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<Like>> GetByPostId(PostId postId, CancellationToken cancellationToken)
+    {
+        return await context.Likes
+            .AsNoTracking()
+            .Where(s => s.PostId == postId)
+            .ToListAsync(cancellationToken);
     }
     
     public async Task<Like> Add(Like like, CancellationToken cancellationToken)

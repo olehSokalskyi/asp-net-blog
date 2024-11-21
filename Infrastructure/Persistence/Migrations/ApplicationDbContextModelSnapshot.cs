@@ -41,6 +41,31 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("chat_user", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.ArchivedPosts.ArchivedPost", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("ArchivedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("archived_at")
+                        .HasDefaultValueSql("timezone('utc', now())");
+
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("post_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_archived_posts");
+
+                    b.HasIndex("PostId")
+                        .HasDatabaseName("ix_archived_posts_post_id");
+
+                    b.ToTable("archived_posts", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Categories.Category", b =>
                 {
                     b.Property<Guid>("Id")
@@ -363,6 +388,18 @@ namespace Infrastructure.Persistence.Migrations
                         .HasConstraintName("fk_chat_user_users_user_id");
                 });
 
+            modelBuilder.Entity("Domain.ArchivedPosts.ArchivedPost", b =>
+                {
+                    b.HasOne("Domain.Posts.Post", "Post")
+                        .WithMany("ArchivedPosts")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_archived_posts_posts_post_id");
+
+                    b.Navigation("Post");
+                });
+
             modelBuilder.Entity("Domain.Likes.Like", b =>
                 {
                     b.HasOne("Domain.Posts.Post", "Post")
@@ -465,6 +502,8 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Posts.Post", b =>
                 {
+                    b.Navigation("ArchivedPosts");
+
                     b.Navigation("Likes");
                 });
 

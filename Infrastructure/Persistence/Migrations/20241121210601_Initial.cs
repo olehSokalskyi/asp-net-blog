@@ -78,7 +78,7 @@ namespace Infrastructure.Persistence.Migrations
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "timezone('utc', now())"),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "timezone('utc', now())"),
                     role_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    gender_id = table.Column<Guid>(type: "uuid", nullable: false)
+                    gender_id = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -196,6 +196,25 @@ namespace Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "archived_posts",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    post_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    archived_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "timezone('utc', now())")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_archived_posts", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_archived_posts_posts_post_id",
+                        column: x => x.post_id,
+                        principalTable: "posts",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "likes",
                 columns: table => new
                 {
@@ -220,6 +239,11 @@ namespace Infrastructure.Persistence.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "ix_archived_posts_post_id",
+                table: "archived_posts",
+                column: "post_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_chat_user_user_id",
@@ -281,6 +305,9 @@ namespace Infrastructure.Persistence.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "archived_posts");
+
             migrationBuilder.DropTable(
                 name: "categories");
 

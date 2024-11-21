@@ -1,4 +1,5 @@
-﻿using Domain.Likes;
+﻿using Domain.ArchivedPosts;
+using Domain.Likes;
 using Domain.Users;
 
 namespace Domain.Posts;
@@ -15,6 +16,7 @@ public class Post
     public User? User { get; }
     
     public List<Like> Likes { get; private set; } = new();
+    public List<ArchivedPost> ArchivedPosts { get; private set; } = new();
     
     private Post(PostId id, string body, DateTime createdAt, DateTime updatedAt, UserId userId)
     {
