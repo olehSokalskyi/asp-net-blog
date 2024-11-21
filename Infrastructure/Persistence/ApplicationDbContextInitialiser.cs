@@ -40,7 +40,6 @@ public class ApplicationDbContextInitialiser(ApplicationDbContext context)
         if (!context.Users.Any())
         {
             var adminRole = await context.Roles.FirstOrDefaultAsync(r => r.Name == "Admin");
-            var manGender = await context.Genders.FirstOrDefaultAsync(g => g.Title == "Man");
             if (adminRole != null)
             {
                 var passwordHash = passwordHasher.HashPassword("adminAdmin123");
@@ -52,8 +51,7 @@ public class ApplicationDbContextInitialiser(ApplicationDbContext context)
                     "admin@example.com",
                     passwordHash,
                     "profilePictureUrl",
-                    adminRole.Id,
-                    manGender.Id);
+                    adminRole.Id);
                 context.Users.Add(adminUser);
                 await context.SaveChangesAsync();
             }

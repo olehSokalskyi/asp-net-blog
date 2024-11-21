@@ -16,7 +16,7 @@ public record UserDto(
     Guid? RoleId,
     RoleDto? Role,
     Guid? GenderId,
-    GenderDto Gender
+    GenderDto? Gender
 )
 {
     public static UserDto FromDomainModel(User user)
@@ -30,9 +30,9 @@ public record UserDto(
             UpdatedAt: user.UpdatedAt,
             CreatedAt: user.CreatedAt,
             RoleId: user.RoleId.Value,
-            Role: RoleDto.FromDomainModel(user.Role),
-            GenderId: user.GenderId.Value,
-            Gender: GenderDto.FromDomainModel(user.Gender)
+            Role: RoleDto.FromDomainModel(user.Role), 
+            GenderId: user.GenderId?.Value,
+            Gender:  GenderDto.FromDomainModel(user.Gender) 
             
             );
 }
@@ -41,8 +41,7 @@ public record CreateUserDto(
     string LastName,
     string Email,
     string Username,
-    string Password,
-    Guid GenderId
+    string Password
 );
 public record UserUpdatePasswordDto(
     string CurrentPassword,
