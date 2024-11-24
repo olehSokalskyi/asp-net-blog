@@ -41,6 +41,31 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("chat_user", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.ArchivedPosts.ArchivedPost", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("ArchivedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("archived_at")
+                        .HasDefaultValueSql("timezone('utc', now())");
+
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("post_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_archived_posts");
+
+                    b.HasIndex("PostId")
+                        .HasDatabaseName("ix_archived_posts_post_id");
+
+                    b.ToTable("archived_posts", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Categories.Category", b =>
                 {
                     b.Property<Guid>("Id")
@@ -120,6 +145,38 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("genders", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Likes.Like", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("timezone('utc', now())");
+
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("post_id");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_likes");
+
+                    b.HasIndex("PostId")
+                        .HasDatabaseName("ix_likes_post_id");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_likes_user_id");
+
+                    b.ToTable("likes", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Messages.Message", b =>
                 {
                     b.Property<Guid>("Id")
@@ -157,6 +214,42 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("messages", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Posts.Post", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("body");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("timezone('utc', now())");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("timezone('utc', now())");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_posts");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_posts_user_id");
+
+                    b.ToTable("posts", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Roles.Role", b =>
                 {
                     b.Property<Guid>("Id")
@@ -172,6 +265,38 @@ namespace Infrastructure.Persistence.Migrations
                         .HasName("pk_roles");
 
                     b.ToTable("roles", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Subscribers.Subscriber", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("timezone('utc', now())");
+
+                    b.Property<Guid>("FollowUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("follow_user_id");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_subscribers");
+
+                    b.HasIndex("FollowUserId")
+                        .HasDatabaseName("ix_subscribers_follow_user_id");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_subscribers_user_id");
+
+                    b.ToTable("subscribers", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Users.User", b =>
@@ -195,6 +320,10 @@ namespace Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(255)")
                         .HasColumnName("first_name");
+
+                    b.Property<Guid?>("GenderId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("gender_id");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -233,6 +362,9 @@ namespace Infrastructure.Persistence.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_users_email");
 
+                    b.HasIndex("GenderId")
+                        .HasDatabaseName("ix_users_gender_id");
+
                     b.HasIndex("RoleId")
                         .HasDatabaseName("ix_users_role_id");
 
@@ -256,6 +388,39 @@ namespace Infrastructure.Persistence.Migrations
                         .HasConstraintName("fk_chat_user_users_user_id");
                 });
 
+            modelBuilder.Entity("Domain.ArchivedPosts.ArchivedPost", b =>
+                {
+                    b.HasOne("Domain.Posts.Post", "Post")
+                        .WithMany("ArchivedPosts")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_archived_posts_posts_post_id");
+
+                    b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("Domain.Likes.Like", b =>
+                {
+                    b.HasOne("Domain.Posts.Post", "Post")
+                        .WithMany("Likes")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_likes_posts_post_id");
+
+                    b.HasOne("Domain.Users.User", "User")
+                        .WithMany("Likes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_likes_users_user_id");
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.Messages.Message", b =>
                 {
                     b.HasOne("Domain.Chats.Chat", "Chat")
@@ -277,14 +442,55 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Domain.Posts.Post", b =>
+                {
+                    b.HasOne("Domain.Users.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_posts_users_id");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Subscribers.Subscriber", b =>
+                {
+                    b.HasOne("Domain.Users.User", "FollowUser")
+                        .WithMany("Followers")
+                        .HasForeignKey("FollowUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_subscribers_users_follow_user_id");
+
+                    b.HasOne("Domain.Users.User", "User")
+                        .WithMany("Subscribers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_subscribers_users_user_id");
+
+                    b.Navigation("FollowUser");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.Users.User", b =>
                 {
+                    b.HasOne("Domain.Genders.Gender", "Gender")
+                        .WithMany()
+                        .HasForeignKey("GenderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_users_genders_id");
+
                     b.HasOne("Domain.Roles.Role", "Role")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("fk_users_roles_id");
+
+                    b.Navigation("Gender");
 
                     b.Navigation("Role");
                 });
@@ -294,9 +500,22 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Messages");
                 });
 
+            modelBuilder.Entity("Domain.Posts.Post", b =>
+                {
+                    b.Navigation("ArchivedPosts");
+
+                    b.Navigation("Likes");
+                });
+
             modelBuilder.Entity("Domain.Users.User", b =>
                 {
+                    b.Navigation("Followers");
+
+                    b.Navigation("Likes");
+
                     b.Navigation("Messages");
+
+                    b.Navigation("Subscribers");
                 });
 #pragma warning restore 612, 618
         }

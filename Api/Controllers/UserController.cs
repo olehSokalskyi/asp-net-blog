@@ -23,7 +23,8 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
         var entities = await userQueries.GetAll(cancellationToken);
         return entities.Select(UserDto.FromDomainModel).ToList();
     }
-    [HttpPost]
+    
+    [HttpPost("register")]
     public async Task<ActionResult<UserDto>> Add([FromBody] CreateUserDto userDto, CancellationToken cancellationToken)
     {
         var input = new CreateUserCommand
@@ -73,7 +74,8 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
             UserId = Guid.Parse(userIdClaim),
             Username = userDto.Username,
             FirstName = userDto.FirstName,
-            LastName = userDto.LastName
+            LastName = userDto.LastName,
+            GenderId = userDto.GenderId.Value
         };
         var result = await sender.Send(input, cancellationToken);
         return result.Match<ActionResult<UserDto>>(

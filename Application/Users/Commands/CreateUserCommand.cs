@@ -2,6 +2,7 @@
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
 using Application.Users.Exceptions;
+using Domain.Genders;
 using Domain.Roles;
 using Domain.Users;
 using MediatR;
@@ -20,7 +21,8 @@ public record CreateUserCommand : IRequest<Result<User, UserException>>
 public class CreateUserCommandHandler(
     IUserRepository userRepository,
     IPasswordHasher passwordHasher,
-    IRoleRepository roleRepository)
+    IRoleRepository roleRepository,
+    IGenderRepository genderRepository)
     : IRequestHandler<CreateUserCommand, Result<User, UserException>>
 {
     public async Task<Result<User, UserException>> Handle(CreateUserCommand request,
@@ -33,22 +35,22 @@ public class CreateUserCommandHandler(
             return await role.Match(
                 async r =>
                 {
-                    var existingUserEmail = await userRepository.GetByEmail(request.Email, cancellationToken);
+                    
+                var existingUserEmail = await userRepository.GetByEmail(request.Email, cancellationToken);
 
-                    return await existingUserEmail.Match(
-                        u => Task.FromResult<Result<User, UserException>>(
-                            new UserWithEmailAlreadyExistsException(u.Email)),
-                        async () =>
-                        {
-                            var existingUserUserName =
-                                await userRepository.GetByUsername(request.Username, cancellationToken);
-                            return await existingUserUserName.Match(
-                                u => Task.FromResult<Result<User, UserException>>(
-                                    new UserWithUsernameAlreadyExistsException(u.Username)),
-                                async () => await CreateEntity(request.Username, request.FirstName, request.LastName,
-                                    request.Email, request.Password, r, cancellationToken));
-                        }
-                    );
+                return await existingUserEmail.Match(
+                    u => Task.FromResult<Result<User, UserException>>(
+                        new UserWithEmailAlreadyExistsException(u.Email)),
+                    async () =>
+                    {
+                        var existingUserUserName =
+                            await userRepository.GetByUsername(request.Username, cancellationToken);
+                        return await existingUserUserName.Match(
+                            u => Task.FromResult<Result<User, UserException>>(
+                                new UserWithUsernameAlreadyExistsException(u.Username)),
+                            async () => await CreateEntity(request.Username, request.FirstName, request.LastName,
+                                request.Email, request.Password, r, cancellationToken));
+                    });
                 },
                 () => Task.FromResult<Result<User, UserException>>(new UserRoleNotFoundException("User")));
         }

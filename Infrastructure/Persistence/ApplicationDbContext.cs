@@ -1,9 +1,13 @@
 ﻿using System.Reflection;
+using Domain.ArchivedPosts;
 using Domain.Categories;
 using Domain.Chats;
 using Domain.Genders;
+using Domain.Likes;
 using Domain.Messages;
+using Domain.Posts;
 using Domain.Roles;
+using Domain.Subscribers;
 using Domain.Users;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +21,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Role> Roles { get; set; }
     public DbSet<Gender> Genders { get; set; }
     public DbSet<Category> Categories { get; set; }
-
+    public DbSet<Post> Posts { get; set; }
+    public DbSet<Subscriber> Subscribers { get; set; }
+    public DbSet<Like> Likes { get; set; }
+    public DbSet<ArchivedPost> ArchivedPosts { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

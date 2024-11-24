@@ -1,4 +1,5 @@
 ﻿using Application.Common.Interfaces;
+using Domain.Genders;
 using Domain.Roles;
 using Domain.Users;
 using Infrastructure.Persistence.Converters;
@@ -24,6 +25,15 @@ public class ApplicationDbContextInitialiser(ApplicationDbContext context)
             var userRole = Role.New(new RoleId(Guid.NewGuid()), "User");
 
             context.Roles.AddRange(adminRole, userRole);
+            await context.SaveChangesAsync();
+        }
+
+        if (!context.Genders.Any())
+        {
+            var manGender = Gender.New(new GenderId(Guid.NewGuid()), "Man");
+            var womanGender = Gender.New(new GenderId(Guid.NewGuid()), "Woman");
+            
+            context.Genders.AddRange(manGender, womanGender);
             await context.SaveChangesAsync();
         }
 

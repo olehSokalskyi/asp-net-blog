@@ -21,16 +21,16 @@ public class UpdateCategoryCommandHandler(ICategoryRepository categoryRepository
         CancellationToken cancellationToken)
     {
         var categoryId = new CategoryId(request.CategoryId);
-        var faculty = await categoryRepository.GetById(categoryId, cancellationToken);
+        var category = await categoryRepository.GetById(categoryId, cancellationToken);
 
-        return await faculty.Match(
-            async f =>
+        return await category.Match(
+            async ca =>
             {
                 var existingCategory = await CheckDuplicated(categoryId, request.Name, cancellationToken);
 
                 return await existingCategory.Match(
                     c => Task.FromResult<Result<Category, CategoryException>>(new CategoryAlreadyExistsException(c.Id)),
-                    async () => await UpdateEntity(f, request.Name, cancellationToken));
+                    async () => await UpdateEntity(ca, request.Name, cancellationToken));
             },
             () => Task.FromResult<Result<Category, CategoryException>>(new CategoryNotFoundException(categoryId)));
     }

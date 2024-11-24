@@ -77,11 +77,18 @@ namespace Infrastructure.Persistence.Migrations
                     profile_picture = table.Column<string>(type: "varchar(255)", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "timezone('utc', now())"),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "timezone('utc', now())"),
-                    role_id = table.Column<Guid>(type: "uuid", nullable: false)
+                    role_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    gender_id = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_users", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_users_genders_id",
+                        column: x => x.gender_id,
+                        principalTable: "genders",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "fk_users_roles_id",
                         column: x => x.role_id,
@@ -141,9 +148,116 @@ namespace Infrastructure.Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "posts",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    body = table.Column<string>(type: "varchar(255)", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "timezone('utc', now())"),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "timezone('utc', now())"),
+                    user_id = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_posts", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_posts_users_id",
+                        column: x => x.user_id,
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "subscribers",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    follow_user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "timezone('utc', now())")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_subscribers", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_subscribers_users_follow_user_id",
+                        column: x => x.follow_user_id,
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_subscribers_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "archived_posts",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    post_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    archived_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "timezone('utc', now())")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_archived_posts", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_archived_posts_posts_post_id",
+                        column: x => x.post_id,
+                        principalTable: "posts",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "likes",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    post_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "timezone('utc', now())")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_likes", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_likes_posts_post_id",
+                        column: x => x.post_id,
+                        principalTable: "posts",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_likes_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "ix_archived_posts_post_id",
+                table: "archived_posts",
+                column: "post_id");
+
             migrationBuilder.CreateIndex(
                 name: "ix_chat_user_user_id",
                 table: "chat_user",
+                column: "user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_likes_post_id",
+                table: "likes",
+                column: "post_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_likes_user_id",
+                table: "likes",
                 column: "user_id");
 
             migrationBuilder.CreateIndex(
@@ -157,10 +271,30 @@ namespace Infrastructure.Persistence.Migrations
                 column: "user_id");
 
             migrationBuilder.CreateIndex(
+                name: "ix_posts_user_id",
+                table: "posts",
+                column: "user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_subscribers_follow_user_id",
+                table: "subscribers",
+                column: "follow_user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_subscribers_user_id",
+                table: "subscribers",
+                column: "user_id");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_users_email",
                 table: "users",
                 column: "email",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_users_gender_id",
+                table: "users",
+                column: "gender_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_users_role_id",
@@ -172,22 +306,34 @@ namespace Infrastructure.Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "archived_posts");
+
+            migrationBuilder.DropTable(
                 name: "categories");
 
             migrationBuilder.DropTable(
                 name: "chat_user");
 
             migrationBuilder.DropTable(
-                name: "genders");
+                name: "likes");
 
             migrationBuilder.DropTable(
                 name: "messages");
+
+            migrationBuilder.DropTable(
+                name: "subscribers");
+
+            migrationBuilder.DropTable(
+                name: "posts");
 
             migrationBuilder.DropTable(
                 name: "chats");
 
             migrationBuilder.DropTable(
                 name: "users");
+
+            migrationBuilder.DropTable(
+                name: "genders");
 
             migrationBuilder.DropTable(
                 name: "roles");

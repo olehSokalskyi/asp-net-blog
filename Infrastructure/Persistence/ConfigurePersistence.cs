@@ -40,17 +40,26 @@ public static class ConfigurePersistence
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IUserQueries, UserRepository>();
         services.AddScoped<IRoleQueries, RoleRepository>();
+        services.AddScoped<IGenderRepository, GenderRepository>();
+        services.AddScoped<ILikeRepository, LikeRepository>();
+        services.AddScoped<ILikeQueries, LikeRepository>();
+        services.AddScoped<IGenderQueries, GenderRepository>();
+        services.AddScoped<ISubscriberRepository, SubscriberRepository>();
+        services.AddScoped<ISubscriberQueries, SubscriberRepository>();
+        services.AddScoped<IArchivedPostRepository, ArchivedPostRepository>();
+        services.AddScoped<IArchivedPostQueries, ArchivedPostRepository>();
     }
     
     private static void AddServices(this IServiceCollection services)
     {
         services.AddScoped<IPasswordHasher, PasswordHasher>();
-        services.AddScoped<IGenderRepository, GenderRepository>();
-
-        services.AddScoped<IGenderQueries, GenderRepository>();
         
         services.AddScoped<CategoryRepository>();
         services.AddScoped<ICategoryRepository>(provider => provider.GetRequiredService<CategoryRepository>());
         services.AddScoped<ICategoryQueries>(provider => provider.GetRequiredService<CategoryRepository>());
+        
+        services.AddScoped<PostRepository>();
+        services.AddScoped<IPostRepository>(provider => provider.GetRequiredService<PostRepository>());
+        services.AddScoped<IPostQueries>(provider => provider.GetRequiredService<PostRepository>());
     }
 }
