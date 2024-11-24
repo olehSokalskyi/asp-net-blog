@@ -11,4 +11,6 @@ public interface IPostRepository
     Task<Post> Add(Post post, CancellationToken cancellationToken);
     Task<Post> Update(Post post, CancellationToken cancellationToken);
     Task<Post> Delete(Post post, CancellationToken cancellationToken);
+    
+    Task<PostImage> AddImage(PostImage postImage, CancellationToken cancellationToken);
 }

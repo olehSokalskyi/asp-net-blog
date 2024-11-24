@@ -19,6 +19,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Gender> Genders { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Post> Posts { get; set; }
+    public DbSet<PostImage> PostImages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

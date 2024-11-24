@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241101102522_Initial")]
+    [Migration("20241124174857_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -160,6 +160,61 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("messages", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Posts.Post", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("body");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("timezone('utc', now())");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("timezone('utc', now())");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_posts");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_posts_user_id");
+
+                    b.ToTable("posts", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Posts.PostImage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("post_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_post_images");
+
+                    b.HasIndex("PostId")
+                        .HasDatabaseName("ix_post_images_post_id");
+
+                    b.ToTable("post_images", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Roles.Role", b =>
                 {
                     b.Property<Guid>("Id")
@@ -280,6 +335,30 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Domain.Posts.Post", b =>
+                {
+                    b.HasOne("Domain.Users.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_posts_users_id");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Posts.PostImage", b =>
+                {
+                    b.HasOne("Domain.Posts.Post", "Post")
+                        .WithMany("Images")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_post_images_posts_id");
+
+                    b.Navigation("Post");
+                });
+
             modelBuilder.Entity("Domain.Users.User", b =>
                 {
                     b.HasOne("Domain.Roles.Role", "Role")
@@ -295,6 +374,11 @@ namespace Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Domain.Chats.Chat", b =>
                 {
                     b.Navigation("Messages");
+                });
+
+            modelBuilder.Entity("Domain.Posts.Post", b =>
+                {
+                    b.Navigation("Images");
                 });
 
             modelBuilder.Entity("Domain.Users.User", b =>

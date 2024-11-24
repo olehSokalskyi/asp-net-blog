@@ -13,6 +13,8 @@ public class Post
     public UserId UserId { get; }
     public User? User { get; }
 
+    public ICollection<PostImage>? Images { get; }
+    
     private Post(PostId id, string body, DateTime createdAt, DateTime updatedAt, UserId userId)
     {
         Id = id;
