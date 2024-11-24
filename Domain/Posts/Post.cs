@@ -14,9 +14,10 @@ public class Post
     
     public UserId UserId { get; }
     public User? User { get; }
-    
+    public ICollection<PostImage>? Images { get; }
     public List<Like> Likes { get; private set; } = new();
     public List<ArchivedPost> ArchivedPosts { get; private set; } = new();
+
     
     private Post(PostId id, string body, DateTime createdAt, DateTime updatedAt, UserId userId)
     {
