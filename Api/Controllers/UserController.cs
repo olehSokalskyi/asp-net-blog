@@ -23,8 +23,8 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
         var entities = await userQueries.GetAll(cancellationToken);
         return entities.Select(UserDto.FromDomainModel).ToList();
     }
-
-    [HttpPost]
+    
+    [HttpPost("register")]
     public async Task<ActionResult<UserDto>> Add([FromBody] CreateUserDto userDto, CancellationToken cancellationToken)
     {
         var input = new CreateUserCommand
@@ -49,7 +49,7 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
         var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
         var claims = jwtDecoder.DecodeToken(token);
         var userIdClaim = claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
-        
+
         var input = new UpdateUserEmailCommand
         {
             Email = userDto.Email,
@@ -60,6 +60,7 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
             u => UserDto.FromDomainModel(u),
             e => e.ToObjectResult());
     }
+
     [Authorize]
     [HttpPut("update-data")]
     public async Task<ActionResult<UserDto>> UpdateData([FromBody] UserDto userDto, CancellationToken cancellationToken)
@@ -67,27 +68,31 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
         var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
         var claims = jwtDecoder.DecodeToken(token);
         var userIdClaim = claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
-        
+
         var input = new UpdateUserDataCommand
         {
             UserId = Guid.Parse(userIdClaim),
             Username = userDto.Username,
             FirstName = userDto.FirstName,
-            LastName = userDto.LastName
+            LastName = userDto.LastName,
+            GenderId = userDto.GenderId.Value
         };
         var result = await sender.Send(input, cancellationToken);
         return result.Match<ActionResult<UserDto>>(
             u => UserDto.FromDomainModel(u),
             e => e.ToObjectResult());
     }
+
     [Authorize]
     [HttpPut("update-password")]
-    public async Task<ActionResult<UserDto>> UpdatePassword([FromBody] UserUpdatePasswordDto userUpdatePasswordDto, CancellationToken cancellationToken)
+    public async Task<ActionResult<UserDto>> UpdatePassword([FromBody] UserUpdatePasswordDto userUpdatePasswordDto,
+        CancellationToken cancellationToken)
     {
         var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-        var claims = jwtDecoder.DecodeToken(token);
-        var userIdClaim = claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
-        
+        var userIdClaim = jwtDecoder.DecodeToken(token).FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)
+            ?.Value;
+
+
         var input = new UpdateUserPasswordCommand
         {
             UserId = Guid.Parse(userIdClaim),
@@ -99,6 +104,7 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
             u => UserDto.FromDomainModel(u),
             e => e.ToObjectResult());
     }
+
     [Authorize]
     [HttpDelete("{id}")]
     public async Task<ActionResult<UserDto>> Delete(Guid id, CancellationToken cancellationToken)
@@ -114,7 +120,7 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<string>> Login([FromBody] UserLoginDto userLoginDto,
+    public async Task<ActionResult<TokenDto>> Login([FromBody] UserLoginDto userLoginDto,
         CancellationToken cancellationToken)
     {
         var input = new LoginUserCommand
@@ -123,11 +129,12 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
             password = userLoginDto.Password
         };
         var result = await sender.Send(input, cancellationToken);
-        return result.Match<ActionResult<string>>(
-            u => Ok(u),
+        return result.Match<ActionResult<TokenDto>>(
+            u => Ok(new TokenDto(u)),
             e => e.ToObjectResult());
     }
-    [Authorize(Roles="Admin")]
+
+    [Authorize(Roles = "Admin")]
     [HttpPut("update-role")]
     public async Task<ActionResult<UserDto>> UpdateRole([FromBody] UserUpdateRoleDto userUpdateRoleDto,
         CancellationToken cancellationToken)

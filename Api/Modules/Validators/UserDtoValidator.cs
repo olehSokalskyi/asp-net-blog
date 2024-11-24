@@ -12,15 +12,15 @@ public class UserDtoValidator: AbstractValidator<UserDto>
         RuleFor(x => x.Username).NotEmpty().MaximumLength(255).MinimumLength(3);
     }
 }
+// public class UserLoginDtoValidator: AbstractValidator<UserLoginDto>
+// {
+//     public UserLoginDtoValidator()
+//     {
+//         RuleFor(x => x.email).NotEmpty().EmailAddress();
+//         RuleFor(x => x.Password).NotEmpty().MinimumLength(8);
+//     }
+// }
 
-public class UserLoginDtoValidator: AbstractValidator<UserLoginDto>
-{
-    public UserLoginDtoValidator()
-    {
-        RuleFor(x => x.email).NotEmpty().EmailAddress();
-        RuleFor(x => x.Password).NotEmpty().MinimumLength(8);
-    }
-}
 
 public class CreateUserDtoValidator: AbstractValidator<CreateUserDto>
 {

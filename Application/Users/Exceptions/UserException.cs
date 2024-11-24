@@ -1,4 +1,5 @@
-﻿using Domain.Roles;
+﻿using Domain.Genders;
+using Domain.Roles;
 using Domain.Users;
 
 namespace Application.Users.Exceptions;
@@ -34,4 +35,7 @@ public class UserRoleNotFoundException(string roleName)
     
 public class UserRoleNotFoundExceptionById(RoleId roleId):
     UserException(UserId.Empty(), $"Role with id: {roleId} not found");
+
+public class GenderNotFoundException(GenderId genderId):
+    UserException(UserId.Empty(), $"Gender with id: {genderId} not found");
     

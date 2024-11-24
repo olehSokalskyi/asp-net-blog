@@ -1,4 +1,5 @@
-﻿using Domain.Roles;
+﻿using Domain.Genders;
+using Domain.Roles;
 using Domain.Users;
 
 namespace Api.Dtos;
@@ -13,7 +14,9 @@ public record UserDto(
     DateTime? UpdatedAt,
     DateTime? CreatedAt,
     Guid? RoleId,
-    Role? Role
+    RoleDto? Role,
+    Guid? GenderId,
+    GenderDto? Gender
 )
 {
     public static UserDto FromDomainModel(User user)
@@ -27,7 +30,10 @@ public record UserDto(
             UpdatedAt: user.UpdatedAt,
             CreatedAt: user.CreatedAt,
             RoleId: user.RoleId.Value,
-            Role: user.Role
+            Role: RoleDto.FromDomainModel(user.Role), 
+            GenderId: user.GenderId?.Value,
+            Gender:  GenderDto.FromDomainModel(user.Gender) 
+            
             );
 }
 public record CreateUserDto(
@@ -54,4 +60,7 @@ public record UserLoginDto(
 public record UserUpdateRoleDto(
     Guid RoleId,
     Guid UserId
+);
+public record TokenDto(
+    string Token
 );
