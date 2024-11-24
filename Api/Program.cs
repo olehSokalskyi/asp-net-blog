@@ -1,5 +1,4 @@
 using Api.Modules;
-using Api.Modules.ChatHub;
 using Application;
 using Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -81,7 +80,7 @@ await app.InitialiseDb();
 app.UseCors("AllowSpecificOrigin");
 
 app.MapControllers();
-app.MapHub<ChatHub>("/chathub");
+//app.MapHub<ChatHub>("/chathub");
 
 app.UseAuthentication();
 app.UseAuthorization();
