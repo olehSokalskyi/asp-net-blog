@@ -14,5 +14,7 @@ public class PostNotFoundException(PostId id) : PostException(id, $"Post under i
 public class PostUserNotFoundException(PostId postId, UserId userId)
     : PostException(postId, $"User under id: {userId} not found");
 
+public class PostFailedToUploadImage(PostId id) : PostException(id, $"Image upload failed to upload");
+
 public class PostUnknownException(PostId id, Exception innerException)
     : PostException(id, $"Unknown exception for the post under id: {id}", innerException);

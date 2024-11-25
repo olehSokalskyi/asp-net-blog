@@ -7,7 +7,8 @@ public record PostDto(
     string? Body,
     DateTime? CreatedAt,
     DateTime? UpdatedAt,
-    Guid? UserId)
+    Guid? UserId,
+    IFormFile? File)
 {
     public static PostDto FromDomainModel(Post post)
         => new(
@@ -15,5 +16,6 @@ public record PostDto(
             Body: post.Body,
             CreatedAt: post.CreatedAt,
             UpdatedAt: post.UpdatedAt,
-            UserId: post.UserId.Value);
+            UserId: post.UserId.Value,
+            File: null);
 }

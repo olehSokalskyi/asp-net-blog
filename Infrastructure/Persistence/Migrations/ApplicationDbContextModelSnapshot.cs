@@ -257,6 +257,25 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("posts", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Posts.PostImage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("post_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_post_images");
+
+                    b.HasIndex("PostId")
+                        .HasDatabaseName("ix_post_images_post_id");
+
+                    b.ToTable("post_images", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Roles.Role", b =>
                 {
                     b.Property<Guid>("Id")
@@ -473,6 +492,18 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Domain.Posts.PostImage", b =>
+                {
+                    b.HasOne("Domain.Posts.Post", "Post")
+                        .WithMany("Images")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_post_images_posts_id");
+
+                    b.Navigation("Post");
+                });
+
             modelBuilder.Entity("Domain.Subscribers.Subscriber", b =>
                 {
                     b.HasOne("Domain.Users.User", "FollowUser")
@@ -522,6 +553,8 @@ namespace Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Domain.Posts.Post", b =>
                 {
                     b.Navigation("ArchivedPosts");
+
+                    b.Navigation("Images");
 
                     b.Navigation("Likes");
                 });

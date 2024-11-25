@@ -40,7 +40,7 @@ public class PostsController(
     
     [HttpPost]
     public async Task<ActionResult<PostDto>> Create(
-        [FromBody] PostDto request,
+        [FromForm] PostDto request,
         CancellationToken cancellationToken)
     {
         var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
@@ -50,7 +50,8 @@ public class PostsController(
         var input = new CreatePostCommand
         {
             Body = request.Body!,
-            UserId = Guid.Parse(userIdClaim)
+            UserId = Guid.Parse(userIdClaim),
+            File = request.File!
         };
 
         var result = await sender.Send(input, cancellationToken);

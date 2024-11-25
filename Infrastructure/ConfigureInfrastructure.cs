@@ -1,5 +1,6 @@
 ﻿using Infrastructure.Authentication;
 using Infrastructure.Persistence;
+using Infrastructure.S3;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,6 +12,6 @@ public static class ConfigureInfrastructure
     {
         services.AddPersistence(configuration);
         services.AddAuthenticationJwt();
-        
+        services.AddS3();
     }
 }

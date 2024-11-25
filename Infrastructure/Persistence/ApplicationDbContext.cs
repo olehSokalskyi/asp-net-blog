@@ -22,9 +22,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Gender> Genders { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Post> Posts { get; set; }
+    public DbSet<PostImage> PostImages { get; set; }
     public DbSet<Subscriber> Subscribers { get; set; }
     public DbSet<Like> Likes { get; set; }
     public DbSet<ArchivedPost> ArchivedPosts { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

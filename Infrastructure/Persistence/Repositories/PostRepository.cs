@@ -63,4 +63,13 @@ public class PostRepository(ApplicationDbContext context) : IPostRepository, IPo
 
         return post;
     }
+
+    public async Task<PostImage> AddImage(PostImage postImage, CancellationToken cancellationToken)
+    {
+        await context.PostImages.AddAsync(postImage, cancellationToken);
+
+        await context.SaveChangesAsync(cancellationToken);
+
+        return postImage;
+    }
 }
