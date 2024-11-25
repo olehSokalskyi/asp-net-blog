@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class chat_owner : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -240,6 +240,24 @@ namespace Infrastructure.Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "post_images",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    post_id = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_post_images", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_post_images_posts_id",
+                        column: x => x.post_id,
+                        principalTable: "posts",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "ix_archived_posts_post_id",
                 table: "archived_posts",
@@ -269,6 +287,11 @@ namespace Infrastructure.Persistence.Migrations
                 name: "ix_messages_user_id",
                 table: "messages",
                 column: "user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_post_images_post_id",
+                table: "post_images",
+                column: "post_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_posts_user_id",
@@ -321,13 +344,16 @@ namespace Infrastructure.Persistence.Migrations
                 name: "messages");
 
             migrationBuilder.DropTable(
+                name: "post_images");
+
+            migrationBuilder.DropTable(
                 name: "subscribers");
 
             migrationBuilder.DropTable(
-                name: "posts");
+                name: "chats");
 
             migrationBuilder.DropTable(
-                name: "chats");
+                name: "posts");
 
             migrationBuilder.DropTable(
                 name: "users");

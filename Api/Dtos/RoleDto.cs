@@ -7,9 +7,9 @@ public record RoleDto(
     string? Name
     )
 {
-    public static RoleDto FromDomainModel(Role role)
+    public static RoleDto FromDomainModel(Role? role)
         => new(
-            Id: role.Id.Value,
-            Name: role.Name
+            Id: role.Id?.Value,
+            Name: role?.Name
         );
 }

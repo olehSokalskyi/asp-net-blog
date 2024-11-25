@@ -30,9 +30,9 @@ public record UserDto(
             UpdatedAt: user.UpdatedAt,
             CreatedAt: user.CreatedAt,
             RoleId: user.RoleId.Value,
-            Role: RoleDto.FromDomainModel(user.Role), 
+            Role: user.Role is null ? null : RoleDto.FromDomainModel(user.Role),
             GenderId: user.GenderId?.Value,
-            Gender:  GenderDto.FromDomainModel(user.Gender) 
+            Gender: user.Gender is null ? null : GenderDto.FromDomainModel(user.Gender)
             
             );
 }

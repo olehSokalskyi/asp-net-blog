@@ -473,7 +473,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("User");
                 });
 
-
             modelBuilder.Entity("Domain.Posts.PostImage", b =>
                 {
                     b.HasOne("Domain.Posts.Post", "Post")
@@ -484,6 +483,7 @@ namespace Infrastructure.Persistence.Migrations
                         .HasConstraintName("fk_post_images_posts_id");
 
                     b.Navigation("Post");
+                });
 
             modelBuilder.Entity("Domain.Subscribers.Subscriber", b =>
                 {
@@ -533,12 +533,11 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Posts.Post", b =>
                 {
-                    b.Navigation("Images");
-
                     b.Navigation("ArchivedPosts");
 
-                    b.Navigation("Likes");
+                    b.Navigation("Images");
 
+                    b.Navigation("Likes");
                 });
 
             modelBuilder.Entity("Domain.Users.User", b =>
