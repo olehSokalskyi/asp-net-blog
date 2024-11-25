@@ -26,5 +26,10 @@ public class ChatConfiguration : IEntityTypeConfiguration<Chat>
                 "ChatUser",
                 j => j.HasOne<User>().WithMany().HasForeignKey("UserId"),
                 j => j.HasOne<Chat>().WithMany().HasForeignKey("ChatId"));
+        builder.HasOne(x => x.ChatOwner)
+            .WithMany()
+            .HasForeignKey(x => x.ChatOwnerId)
+            .HasConstraintName("fk_chats_users_id")
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

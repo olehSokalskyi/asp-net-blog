@@ -13,5 +13,7 @@ public interface IUserRepository
     
     Task<User> Update(User user, CancellationToken cancellationToken);
     Task<User> Delete(User user, CancellationToken cancellationToken);
-    
+
+
+    Task<Option<List<User>>> GetUsersByIds(List<UserId> userIds, CancellationToken cancellationToken);
 }

@@ -11,7 +11,7 @@ public class TokenGenerator: ITokenGenerator
     public string GenerateToken(User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = "LifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGood"u8.ToArray();
+        var key = "LifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGood"u8.ToArray();
 
         var claims = new List<Claim>
         {
@@ -29,8 +29,8 @@ public class TokenGenerator: ITokenGenerator
         {
             Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.AddHours(1),
-            Issuer = "https://localhost:5001",
-            Audience = "https://localhost:5001",
+            Issuer = "https://localhost:5001/",
+            Audience = "https://localhost:5001/",
             SigningCredentials =
                 new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };

@@ -11,4 +11,5 @@ public interface IChatRepository
     Task<Option<Chat>> GetById(ChatId id, CancellationToken cancellationToken);
     
     Task<Chat> Update(Chat chat, CancellationToken cancellationToken);
+    
 }

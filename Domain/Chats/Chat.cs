@@ -11,19 +11,25 @@ public class Chat
     public DateTime CreatedAt { get; private set; }
     public bool IsGroup { get; private set; }
     public List<User> Users { get; private set; } = new();
+    public UserId ChatOwnerId { get; private set; }
+    public User ChatOwner { get; private set; }
     public List<Message> Messages { get; private set; } = new();
 
-    private Chat(ChatId id, string name, DateTime createdAt, bool isGroup)
+    private Chat(ChatId id, string name, DateTime createdAt, bool isGroup, UserId chatOwnerId, List<User> users)
     {
         Id = id;
         Name = name;
         CreatedAt = createdAt;
         UpdatedAt = createdAt;
         IsGroup = isGroup;
+        ChatOwnerId = chatOwnerId;
+        Users = users;
     }
 
-    public static Chat New(ChatId id, string name, bool isGroup)
-        => new(id, name, DateTime.UtcNow, isGroup);
+
+
+    public static Chat New(ChatId id, string name, bool isGroup, UserId chatOwnerId, List<User> users)
+        => new(id, name, DateTime.UtcNow, isGroup, chatOwnerId, users);
 
     public void UpdateDetails(string name)
     {

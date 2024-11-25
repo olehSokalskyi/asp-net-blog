@@ -72,4 +72,15 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository, IUs
 
         return user;
     }
+    
+    public async Task<Option<List<User>>> GetUsersByIds(List<UserId> userIds, CancellationToken cancellationToken)
+    {
+        var entities = await context.Users
+            .AsNoTracking()
+            .Include(x => x.Role)
+            .Where(x => userIds.Contains(x.Id))
+            .ToListAsync(cancellationToken);
+
+        return entities.Any() ? Option.Some(entities) : Option.None<List<User>>();
+    }
 }

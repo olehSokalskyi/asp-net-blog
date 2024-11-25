@@ -18,3 +18,22 @@ public class ChatUserNotFoundException(UserId userId)
 
 public class ChatUnknownException(ChatId id, Exception innerException)
     : ChatException(id, $"Unknown exception for the chat under id: {id}", innerException);
+
+public class ChatUsersNotFoundException(Exception innerException)
+    : ChatException(ChatId.Empty(), "Users not found", innerException);
+    
+    public class ChatUserNotFound(ChatId chatId,UserId userId)
+        : ChatException(chatId, $"User under id:{userId} into {chatId} chat not found");
+        
+public class ChatUserAlreadyExists(ChatId chatId,UserId userId)
+    : ChatException(chatId, $"User under id:{userId} into {chatId} chat already exists");
+    
+    
+public class ChatUserNotIntoChat(ChatId chatId,UserId userId)
+    : ChatException(chatId, $"User under id:{userId} not into {chatId} chat");
+
+public class ChatNotOwnerException(UserId userId, ChatId chatId)
+    : ChatException(chatId, $"User under id:{userId} is not the owner of the chat under id: {chatId}");
+    
+public class ChatCannotBeEmptyException(ChatId chatId)
+    : ChatException(chatId, $"Chat under id: {chatId} cannot be empty");
