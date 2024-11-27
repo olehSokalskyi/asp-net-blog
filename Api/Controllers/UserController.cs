@@ -24,6 +24,17 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
         return entities.Select(UserDto.FromDomainModel).ToList();
     }
     
+    [HttpGet("{userId:guid}")]
+    public async Task<ActionResult<UserDto>> GetById(
+        [FromRoute] Guid userId, 
+        CancellationToken cancellationToken)
+    {
+        var entity = await userQueries.GetById(new UserId(userId), cancellationToken);
+        return entity.Match<ActionResult<UserDto>>(
+            l => UserDto.FromDomainModel(l),
+            () => NotFound());
+    }
+    
     [HttpPost("register")]
     public async Task<ActionResult<UserDto>> Add([FromBody] CreateUserDto userDto, CancellationToken cancellationToken)
     {

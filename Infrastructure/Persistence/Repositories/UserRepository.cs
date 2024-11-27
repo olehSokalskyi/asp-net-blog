@@ -40,6 +40,7 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository, IUs
         var entity = await context.Users
             .AsNoTracking()
             .Include(x => x.Role)
+            .Include(x => x.Gender)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
         return entity == null ? Option.None<User>() : Option.Some(entity);
@@ -50,6 +51,7 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository, IUs
         var entity = await context.Users
             .AsNoTracking()
             .Include(x => x.Role)
+            .Include(x => x.Gender)
             .FirstOrDefaultAsync(x => x.Email == email, cancellationToken);
 
         return entity == null ? Option.None<User>() : Option.Some(entity);
