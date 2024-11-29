@@ -13,6 +13,9 @@ public class PostRepository(ApplicationDbContext context) : IPostRepository, IPo
     {
         return await context.Posts
             .AsNoTracking()
+            .Include(x => x.User)
+            .Include(x => x.Images)
+            .OrderByDescending(x => x.CreatedAt)
             .ToListAsync(cancellationToken);
     }
 
@@ -20,6 +23,8 @@ public class PostRepository(ApplicationDbContext context) : IPostRepository, IPo
     {
         var entity = await context.Posts
             .AsNoTracking()
+            .Include(x => x.User)
+            .Include(x => x.Images)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
         return entity == null ? Option.None<Post>() : Option.Some(entity);
