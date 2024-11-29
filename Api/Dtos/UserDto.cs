@@ -33,7 +33,6 @@ public record UserDto(
             Role: user.Role is null ? null : RoleDto.FromDomainModel(user.Role),
             GenderId: user.GenderId?.Value,
             Gender: user.Gender is null ? null : GenderDto.FromDomainModel(user.Gender)
-            
             );
 }
 public record CreateUserDto(
