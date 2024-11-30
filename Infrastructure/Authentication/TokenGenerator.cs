@@ -22,7 +22,9 @@ public class TokenGenerator: ITokenGenerator
             new(JwtRegisteredClaimNames.FamilyName, user.LastName),
             new(JwtRegisteredClaimNames.Sub, user.Id.Value.ToString()),
             new("role", user.Role.Name),
-            new(JwtRegisteredClaimNames.AuthTime, DateTime.UtcNow.ToString())
+            new(JwtRegisteredClaimNames.AuthTime, DateTime.UtcNow.ToString()),
+            new("gend", user.Gender.Title != null ? user.Gender.Title : "Unknown"),
+            new("regTi", user.CreatedAt.ToString())
         };
 
         var tokenDescriptor = new SecurityTokenDescriptor

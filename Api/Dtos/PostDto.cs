@@ -8,7 +8,9 @@ public record PostDto(
     DateTime? CreatedAt,
     DateTime? UpdatedAt,
     Guid? UserId,
-    IFormFile? File)
+    UserDto? User,
+    IFormFile? File,
+    IReadOnlyList<PostImageDto?>? Images)
 {
     public static PostDto FromDomainModel(Post post)
         => new(
@@ -17,5 +19,7 @@ public record PostDto(
             CreatedAt: post.CreatedAt,
             UpdatedAt: post.UpdatedAt,
             UserId: post.UserId.Value,
-            File: null);
+            User: post.User is null ? null : UserDto.FromDomainModel(post.User),
+            File: null,
+            Images: post.Images?.Select(PostImageDto.FromDomainModel).ToList());
 }

@@ -25,7 +25,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         {
             IssuerSigningKey =
                 new SymmetricSecurityKey(
-                    "LifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGood"u8.ToArray()),
+                    "LifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGood"u8.ToArray()),
             ValidIssuer = "https://localhost:5001",
             ValidAudience = "https://localhost:5001",
             ValidateLifetime = true,
