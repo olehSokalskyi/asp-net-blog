@@ -1,4 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Application.Common.Interfaces;
 using Domain.Users;
@@ -23,7 +23,7 @@ public class TokenGenerator: ITokenGenerator
             new(JwtRegisteredClaimNames.Sub, user.Id.Value.ToString()),
             new("role", user.Role.Name),
             new(JwtRegisteredClaimNames.AuthTime, DateTime.UtcNow.ToString()),
-            new("gend", user.Gender.Title != null ? user.Gender.Title : "Unknown"),
+            new("gend", user.Gender != null ? user.Gender.Title : "Unknown"),
             new("regTi", user.CreatedAt.ToString())
         };
 
@@ -31,8 +31,8 @@ public class TokenGenerator: ITokenGenerator
         {
             Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.AddHours(1),
-            Issuer = "https://localhost:5001",
-            Audience = "https://localhost:5001",
+            Issuer = "https://localhost:5001/",
+            Audience = "https://localhost:5001/",
             SigningCredentials =
                 new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
