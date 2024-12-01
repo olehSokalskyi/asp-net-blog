@@ -29,6 +29,7 @@ public class SubscriberRepository(ApplicationDbContext context) : ISubscriberRep
     {
         return await context.Subscribers
             .AsNoTracking()
+            .Include(x => x.FollowUser)
             .Where(s => s.UserId == userId)
             .ToListAsync(cancellationToken);
     }

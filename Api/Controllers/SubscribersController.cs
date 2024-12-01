@@ -59,7 +59,7 @@ public class SubscribersController(ISender sender, ISubscriberQueries subscriber
         var input = new CreateSubscriberCommand
         {
             UserId = request.UserId,
-            FollowUserId = request.FollowUserId
+            FollowUserId = request.FollowUserId.Value
         };
 
         var result = await sender.Send(input, cancellationToken);
