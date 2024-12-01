@@ -6,9 +6,9 @@ public class Subscriber
 {
     public SubscriberId Id { get; }
     public UserId UserId { get; }
-    public User User { get; }
+    public User? User { get; }
     public UserId FollowUserId { get; }
-    public User FollowUser { get; }
+    public User? FollowUser { get; }
     public DateTime CreatedAt { get; private set; }
     
     private Subscriber(SubscriberId id, UserId followUserId, UserId userId, DateTime createdAt)
