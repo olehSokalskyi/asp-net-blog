@@ -48,11 +48,6 @@ public static class ConfigurePersistence
         services.AddScoped<ISubscriberQueries, SubscriberRepository>();
         services.AddScoped<IArchivedPostRepository, ArchivedPostRepository>();
         services.AddScoped<IArchivedPostQueries, ArchivedPostRepository>();
-    }
-    
-    private static void AddServices(this IServiceCollection services)
-    {
-        services.AddScoped<IPasswordHasher, PasswordHasher>();
         
         services.AddScoped<CategoryRepository>();
         services.AddScoped<ICategoryRepository>(provider => provider.GetRequiredService<CategoryRepository>());
@@ -61,5 +56,14 @@ public static class ConfigurePersistence
         services.AddScoped<PostRepository>();
         services.AddScoped<IPostRepository>(provider => provider.GetRequiredService<PostRepository>());
         services.AddScoped<IPostQueries>(provider => provider.GetRequiredService<PostRepository>());
+        
+        services.AddScoped<CommentRepository>();
+        services.AddScoped<ICommentRepository>(provider => provider.GetRequiredService<CommentRepository>());
+        services.AddScoped<ICommentQueries>(provider => provider.GetRequiredService<CommentRepository>());
+    }
+    
+    private static void AddServices(this IServiceCollection services)
+    {
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
     }
 }

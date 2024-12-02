@@ -2,6 +2,7 @@
 using Domain.ArchivedPosts;
 using Domain.Categories;
 using Domain.Chats;
+using Domain.Comments;
 using Domain.Genders;
 using Domain.Likes;
 using Domain.Messages;
@@ -26,6 +27,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Subscriber> Subscribers { get; set; }
     public DbSet<Like> Likes { get; set; }
     public DbSet<ArchivedPost> ArchivedPosts { get; set; }
+    public DbSet<Comment> Comments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
