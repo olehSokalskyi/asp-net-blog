@@ -5,6 +5,7 @@ using Application.Common.Interfaces.Queries;
 using Application.Roles;
 using Domain.Roles;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -13,7 +14,7 @@ namespace Api.Controllers;
 [ApiController]
 public class RoleController(ISender sender, IRoleQueries roleQueries) : ControllerBase
 {
-    
+    [Authorize]
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<RoleDto>>> GetAll(CancellationToken cancellationToken)
     {

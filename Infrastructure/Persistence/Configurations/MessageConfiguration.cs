@@ -17,7 +17,7 @@ public class MessageConfiguration : IEntityTypeConfiguration<Message>
             .HasConversion(new DateTimeUtcConverter())
             .HasDefaultValueSql("timezone('utc', now())");
         builder.HasOne(x => x.User)
-            .WithMany(x => x.Messages)
+            .WithMany()
             .HasForeignKey(x => x.UserId);
         builder.HasOne(x => x.Chat)
             .WithMany(x => x.Messages)

@@ -1,4 +1,5 @@
 using Api.Modules;
+using Api.Modules.ChatHub;
 using Application;
 using Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -26,8 +27,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey =
                 new SymmetricSecurityKey(
                     "LifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGood"u8.ToArray()),
-            ValidIssuer = "https://localhost:5001",
-            ValidAudience = "https://localhost:5001",
+            ValidIssuer = "https://localhost:5001/",
+            ValidAudience = "https://localhost:5001/",
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             ValidateIssuer = true,
@@ -81,7 +82,7 @@ await app.InitialiseDb();
 app.UseCors("AllowSpecificOrigin");
 
 app.MapControllers();
-//app.MapHub<ChatHub>("/chathub");
+app.MapHub<ChatHub>("/chathub");
 
 app.UseAuthentication();
 app.UseAuthorization();

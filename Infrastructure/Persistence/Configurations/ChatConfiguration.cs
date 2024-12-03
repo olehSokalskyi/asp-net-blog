@@ -21,11 +21,7 @@ public class ChatConfiguration : IEntityTypeConfiguration<Chat>
             .HasDefaultValueSql("timezone('utc', now())");
         builder.Property(x => x.IsGroup).IsRequired();
         builder.HasMany(x => x.Users)
-            .WithMany(x => x.Chats)
-            .UsingEntity<Dictionary<string, object>>(
-                "ChatUser",
-                j => j.HasOne<User>().WithMany().HasForeignKey("UserId"),
-                j => j.HasOne<Chat>().WithMany().HasForeignKey("ChatId"));
+            .WithMany();
         builder.HasOne(x => x.ChatOwner)
             .WithMany()
             .HasForeignKey(x => x.ChatOwnerId)

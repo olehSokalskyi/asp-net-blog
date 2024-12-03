@@ -23,7 +23,7 @@ public class TokenGenerator: ITokenGenerator
             new(JwtRegisteredClaimNames.Sub, user.Id.Value.ToString()),
             new("role", user.Role.Name),
             new(JwtRegisteredClaimNames.AuthTime, DateTime.UtcNow.ToString()),
-            new("gend", user.Gender.Title != null ? user.Gender.Title : "Unknown"),
+            new("gend", user.Gender != null ? user.Gender.Title : "Unknown"),
             new("regTi", user.CreatedAt.ToString())
         };
 

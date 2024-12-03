@@ -15,6 +15,7 @@ public class Chat
     public User ChatOwner { get; private set; }
     public List<Message> Messages { get; private set; } = new();
 
+    private Chat() { }
     private Chat(ChatId id, string name, DateTime createdAt, bool isGroup, UserId chatOwnerId, List<User> users)
     {
         Id = id;

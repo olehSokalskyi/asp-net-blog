@@ -19,3 +19,8 @@
         POSTGRES_DB: postgres
     ports:
       - "5432:5432"
+  redis:
+    image: redis
+    container_name: blog-redis
+    ports:
+      - "6379:6379"

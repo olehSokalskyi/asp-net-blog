@@ -1,11 +1,13 @@
-﻿using Application.Common.Interfaces.Repositories;
+﻿using Application.Common.Interfaces.Queries;
+using Application.Common.Interfaces.Repositories;
 using Domain.Chats;
+using Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using Optional;
 
 namespace Infrastructure.Persistence.Repositories;
 
-public class ChatRepository(ApplicationDbContext context) : IChatRepository
+public class ChatRepository(ApplicationDbContext context) : IChatRepository, IChatQueries
 {
     public async Task<Chat> Add(Chat chat, CancellationToken cancellationToken)
     {
@@ -40,5 +42,28 @@ public class ChatRepository(ApplicationDbContext context) : IChatRepository
         await context.SaveChangesAsync(cancellationToken);
 
         return chat;
+    }
+    
+    public async Task<Chat> Delete(Chat chat, CancellationToken cancellationToken)
+    {
+        context.Chats.Remove(chat);
+
+        await context.SaveChangesAsync(cancellationToken);
+
+        return chat;
+    }
+
+
+    public async Task<IReadOnlyList<Chat>> GetChatsByUser(UserId user, CancellationToken cancellationToken)
+    {
+        return await context.Chats
+            .AsNoTracking()
+            .AsSplitQuery()
+            .Where(x => x.Users.Any(u => u.Id == user))
+            .Include(x => x.Messages)
+            .ThenInclude(m => m.User)
+            .Include(x=> x.Users)
+            .Include(x => x.ChatOwner)
+            .ToListAsync(cancellationToken);
     }
 }

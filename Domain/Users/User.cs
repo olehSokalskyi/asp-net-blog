@@ -18,8 +18,7 @@ public class User
     public string ProfilePicture { get; private set; }
     public DateTime UpdatedAt { get; private set; }
     public DateTime CreatedAt { get; private set; }
-    public List<Chat> Chats { get; private set; } = new();
-    public List<Message> Messages { get; private set; } = new();
+    //public List<Message> Messages { get; private set; } = new();
     public List<Like> Likes { get; private set; } = new();
     public RoleId RoleId { get; private set;}
     public Role? Role { get; }

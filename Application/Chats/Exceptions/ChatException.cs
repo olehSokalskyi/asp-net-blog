@@ -22,9 +22,11 @@ public class ChatUnknownException(ChatId id, Exception innerException)
 public class ChatUsersNotFoundException(Exception innerException)
     : ChatException(ChatId.Empty(), "Users not found", innerException);
     
-    public class ChatUserNotFound(ChatId chatId,UserId userId)
-        : ChatException(chatId, $"User under id:{userId} into {chatId} chat not found");
-        
+public class UserIntoChatNotFound(ChatId chatId,UserId userId)
+    : ChatException(chatId, $"User under id:{userId} into {chatId} chat not found");
+
+public class ChatUserNotFound(UserId userId) :
+    ChatException(ChatId.Empty(), $"User under id {userId} not found");
 public class ChatUserAlreadyExists(ChatId chatId,UserId userId)
     : ChatException(chatId, $"User under id:{userId} into {chatId} chat already exists");
     
