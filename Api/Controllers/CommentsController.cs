@@ -1,13 +1,13 @@
 ﻿using Api.Dtos;
 using Api.Modules.Errors;
 using Application.Comments.Commands;
+using Application.Common.Extensions;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Queries;
 using Domain.Comments;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Api.Controllers;
 
@@ -71,14 +71,12 @@ public class CommentsController(
         [FromBody] CommentDto request,
         CancellationToken cancellationToken)
     {
-        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-        var claims = jwtDecoder.DecodeToken(token);
-        var userIdClaim = claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
+        var userId = Request.GetUserIdFromToken(jwtDecoder);
 
         var input = new CreateCommentCommand
         {
             Body = request.Body!,
-            UserId = Guid.Parse(userIdClaim),
+            UserId = userId,
             PostId = request.PostId!.Value,
         };
 
@@ -100,15 +98,13 @@ public class CommentsController(
         [FromBody] CommentDto request,
         CancellationToken cancellationToken)
     {
-        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-        var claims = jwtDecoder.DecodeToken(token);
-        var userIdClaim = claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
+        var userId = Request.GetUserIdFromToken(jwtDecoder);
 
         var input = new UpdateCommentCommand
         {
             CommentId = request.Id!.Value,
             Body = request.Body!,
-            UserId = Guid.Parse(userIdClaim)
+            UserId = userId
         };
 
         var result = await sender.Send(input, cancellationToken);
@@ -129,14 +125,12 @@ public class CommentsController(
         [FromRoute] Guid commentId,
         CancellationToken cancellationToken)
     {
-        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-        var claims = jwtDecoder.DecodeToken(token);
-        var userIdClaim = claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
+        var userId = Request.GetUserIdFromToken(jwtDecoder);
 
         var input = new DeleteCommentCommand
         {
             CommentId = commentId,
-            UserId = Guid.Parse(userIdClaim)
+            UserId = userId
         };
 
         var result = await sender.Send(input, cancellationToken);
