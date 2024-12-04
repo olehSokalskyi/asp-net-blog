@@ -38,4 +38,10 @@ public class UserRoleNotFoundExceptionById(RoleId roleId):
 
 public class GenderNotFoundException(GenderId genderId):
     UserException(UserId.Empty(), $"Gender with id: {genderId} not found");
+
+public class UserRefreshTokenNotFoundException(UserId userId, string token) 
+    : UserException(userId, $"Refresh token with token: {token} not found for user under id: {userId}");
+
+public class UserRefreshTokenNotActiveException (UserId userId, string token)
+    : UserException(userId, $"Refresh token with token: {token} is not active for user under id: {userId}");
     

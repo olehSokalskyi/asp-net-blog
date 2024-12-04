@@ -39,5 +39,11 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasForeignKey(x => x.GenderId)
             .HasConstraintName("fk_users_genders_id")
             .OnDelete(DeleteBehavior.Restrict);
+        builder.HasMany(x => x.RefreshTokens)
+            .WithOne(x => x.User)
+            .HasForeignKey(x => x.UserId)
+            .HasConstraintName("fk_refresh_tokens_users_id")
+            .OnDelete(DeleteBehavior.Cascade);
+        
     }
 }

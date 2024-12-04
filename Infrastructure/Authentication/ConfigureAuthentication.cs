@@ -10,5 +10,6 @@ public static class ConfigureAuthentication
     {
         services.AddScoped<ITokenGenerator, TokenGenerator>();
         services.AddScoped<IJwtDecoder, JwtDecoder>();
+        services.AddScoped<IRefreshTokenGenerator, RefreshTokenGenerator>();
     }
 }

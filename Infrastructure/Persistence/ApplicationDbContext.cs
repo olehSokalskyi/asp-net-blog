@@ -28,6 +28,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Like> Likes { get; set; }
     public DbSet<ArchivedPost> ArchivedPosts { get; set; }
     public DbSet<Comment> Comments { get; set; }
+    
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
