@@ -1,18 +1,26 @@
 using Api.Dtos;
 using Api.Modules.Errors;
+using Application.Common.Interfaces;
 using Application.Common.Interfaces.Queries;
 using Application.Likes.Commands;
 using Domain.Likes;
 using Domain.Posts;
 using Domain.Users;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Api.Controllers;
 
+[Authorize]
 [Route("likes")]
 [ApiController]
-public class LikesController(ISender sender, ILikeQueries likeQueries) : ControllerBase
+public class LikesController(
+    ISender sender,
+    ILikeQueries likeQueries,
+    IJwtDecoder jwtDecoder) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<LikeDto>>> GetAll(
@@ -22,10 +30,10 @@ public class LikesController(ISender sender, ILikeQueries likeQueries) : Control
 
         return entities.Select(LikeDto.FromDomainModel).ToList();
     }
-    
+
     [HttpGet("{likeId:guid}")]
     public async Task<ActionResult<LikeDto>> GetById(
-        [FromRoute] Guid likeId, 
+        [FromRoute] Guid likeId,
         CancellationToken cancellationToken)
     {
         var entity = await likeQueries.GetById(new LikeId(likeId), cancellationToken);
@@ -34,10 +42,10 @@ public class LikesController(ISender sender, ILikeQueries likeQueries) : Control
             l => LikeDto.FromDomainModel(l),
             () => NotFound());
     }
-    
+
     [HttpGet("user/{userId:guid}")]
     public async Task<ActionResult<IReadOnlyList<LikeDto>>> GetByUserId(
-        [FromRoute] Guid userId, 
+        [FromRoute] Guid userId,
         CancellationToken cancellationToken)
     {
         var entities = await likeQueries.GetByUserId(new UserId(userId), cancellationToken);
@@ -46,7 +54,7 @@ public class LikesController(ISender sender, ILikeQueries likeQueries) : Control
 
     [HttpGet("post/{postId:guid}")]
     public async Task<ActionResult<IReadOnlyList<LikeDto>>> GetByPostId(
-        [FromRoute] Guid postId, 
+        [FromRoute] Guid postId,
         CancellationToken cancellationToken)
     {
         var entities = await likeQueries.GetByPostId(new PostId(postId), cancellationToken);
@@ -58,10 +66,14 @@ public class LikesController(ISender sender, ILikeQueries likeQueries) : Control
         [FromBody] LikeDto request,
         CancellationToken cancellationToken)
     {
+        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+        var claims = jwtDecoder.DecodeToken(token);
+        var userIdClaim = claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
+        
         var input = new CreateLikeCommand
         {
-            UserId = request.UserId,
-            PostId = request.PostId
+            UserId = Guid.Parse(userIdClaim),
+            PostId = request.PostId!.Value
         };
 
         var result = await sender.Send(input, cancellationToken);
@@ -70,10 +82,10 @@ public class LikesController(ISender sender, ILikeQueries likeQueries) : Control
             l => LikeDto.FromDomainModel(l),
             e => e.ToObjectResult());
     }
-    
+
     [HttpDelete("{likeId:guid}")]
     public async Task<ActionResult<LikeDto>> Delete(
-        [FromRoute] Guid likeId, 
+        [FromRoute] Guid likeId,
         CancellationToken cancellationToken)
     {
         var input = new DeleteLikeCommand()
@@ -87,4 +99,4 @@ public class LikesController(ISender sender, ILikeQueries likeQueries) : Control
             l => LikeDto.FromDomainModel(l),
             e => e.ToObjectResult());
     }
-}   
+}
