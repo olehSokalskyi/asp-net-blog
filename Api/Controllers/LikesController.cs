@@ -1,5 +1,6 @@
 using Api.Dtos;
 using Api.Modules.Errors;
+using Application.Common.Extensions;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Queries;
 using Application.Likes.Commands;
@@ -9,8 +10,6 @@ using Domain.Users;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Api.Controllers;
 
@@ -93,13 +92,11 @@ public class LikesController(
         [FromBody] LikeDto request,
         CancellationToken cancellationToken)
     {
-        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-        var claims = jwtDecoder.DecodeToken(token);
-        var userIdClaim = claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
+        var userId = Request.GetUserIdFromToken(jwtDecoder);
 
         var input = new CreateLikeCommand
         {
-            UserId = Guid.Parse(userIdClaim),
+            UserId = userId,
             PostId = request.PostId!.Value
         };
 

@@ -1,5 +1,6 @@
 ﻿using Api.Dtos;
 using Api.Modules.Errors;
+using Application.Common.Extensions;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Queries;
 using Application.Posts.Commands;
@@ -7,7 +8,6 @@ using Domain.Posts;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Api.Controllers;
 
@@ -71,14 +71,12 @@ public class PostsController(
         [FromForm] PostDto request,
         CancellationToken cancellationToken)
     {
-        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-        var claims = jwtDecoder.DecodeToken(token);
-        var userIdClaim = claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
+        var userId = Request.GetUserIdFromToken(jwtDecoder);
 
         var input = new CreatePostCommand
         {
             Body = request.Body!,
-            UserId = Guid.Parse(userIdClaim),
+            UserId = userId,
             File = request.File!
         };
 
@@ -100,15 +98,13 @@ public class PostsController(
         [FromBody] PostDto request,
         CancellationToken cancellationToken)
     {
-        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-        var claims = jwtDecoder.DecodeToken(token);
-        var userIdClaim = claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
+        var userId = Request.GetUserIdFromToken(jwtDecoder);
 
         var input = new UpdatePostCommand
         {
             PostId = request.Id!.Value,
             Body = request.Body!,
-            UserId = Guid.Parse(userIdClaim)
+            UserId = userId
         };
 
         var result = await sender.Send(input, cancellationToken);
@@ -129,14 +125,12 @@ public class PostsController(
         [FromRoute] Guid postId,
         CancellationToken cancellationToken)
     {
-        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-        var claims = jwtDecoder.DecodeToken(token);
-        var userIdClaim = claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
+        var userId = Request.GetUserIdFromToken(jwtDecoder);
 
         var input = new DeletePostCommand
         {
             PostId = postId,
-            UserId = Guid.Parse(userIdClaim)
+            UserId = userId
         };
 
         var result = await sender.Send(input, cancellationToken);
