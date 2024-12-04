@@ -60,6 +60,8 @@ public static class ConfigurePersistence
         services.AddScoped<CommentRepository>();
         services.AddScoped<ICommentRepository>(provider => provider.GetRequiredService<CommentRepository>());
         services.AddScoped<ICommentQueries>(provider => provider.GetRequiredService<CommentRepository>());
+        
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
     }
     
     private static void AddServices(this IServiceCollection services)

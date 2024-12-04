@@ -27,6 +27,8 @@ public class User
     public Gender? Gender { get; }
     public List<Subscriber> Subscribers { get; private set; } = new();
     public List<Subscriber> Followers { get; private set; } = new();
+    
+    public List<RefreshToken> RefreshTokens { get; private set; } = new();
      
 
     private User(UserId id, string username, string firstName, string lastName, string email, string password,
@@ -78,5 +80,15 @@ public class User
     public void UpdateRole(RoleId role)
     {
         RoleId = role;
+    }
+    
+    public void AddRefreshToken(RefreshToken refreshToken)
+    {
+        RefreshTokens.Add(refreshToken);
+    }
+    
+    public void RemoveRefreshToken(RefreshToken refreshToken)
+    {
+        RefreshTokens.Remove(refreshToken);
     }
 }

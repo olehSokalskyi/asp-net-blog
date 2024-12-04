@@ -61,5 +61,11 @@ public record UserUpdateRoleDto(
     Guid UserId
 );
 public record TokenDto(
-    string Token
+    string Token,
+    string RefreshToken
+);
+
+public record RefreshTokenDto(
+    Guid UserId,
+    string RefreshToken
 );

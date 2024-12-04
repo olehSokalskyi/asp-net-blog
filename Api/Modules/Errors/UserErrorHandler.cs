@@ -14,7 +14,7 @@ public static class UserErrorHandler
                 UserAlreadyExistsException or UserWithEmailAlreadyExistsException
                     or UserWithUsernameAlreadyExistsException => StatusCodes.Status409Conflict,
                 UserNotFoundException or UserWithUsernameNotFoundException or UserRoleNotFoundException
-                    or UserRoleNotFoundExceptionById => StatusCodes.Status404NotFound,
+                    or UserRoleNotFoundExceptionById or UserRefreshTokenNotFoundException => StatusCodes.Status404NotFound,
                 UserUnknownException => StatusCodes.Status500InternalServerError,
                 UserIncorrectPasswordException => StatusCodes.Status401Unauthorized,
                 _ => throw new NotImplementedException("User error handler does not implemented")

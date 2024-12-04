@@ -136,12 +136,12 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
     {
         var input = new LoginUserCommand
         {
-            email = userLoginDto.email,
-            password = userLoginDto.Password
+            Email = userLoginDto.email,
+            Password = userLoginDto.Password
         };
         var result = await sender.Send(input, cancellationToken);
         return result.Match<ActionResult<TokenDto>>(
-            u => Ok(new TokenDto(u)),
+            u => Ok(new TokenDto(u.Token, u.RefreshToken)),
             e => e.ToObjectResult());
     }
 
@@ -158,6 +158,36 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
         var result = await sender.Send(input, cancellationToken);
         return result.Match<ActionResult<UserDto>>(
             u => UserDto.FromDomainModel(u),
+            e => e.ToObjectResult());
+    }
+    
+    [HttpPost("refresh-token")]
+    public async Task<ActionResult<TokenDto>> RefreshToken([FromBody] RefreshTokenDto refreshTokenDto,
+        CancellationToken cancellationToken)
+    {
+        var input = new RegenerateRefreshTokenCommand
+        {
+            Token = refreshTokenDto.RefreshToken,
+            UserId = refreshTokenDto.UserId
+        };
+        var result = await sender.Send(input, cancellationToken);
+        return result.Match<ActionResult<TokenDto>>(
+            u => Ok(new TokenDto(u.Token, u.RefreshToken)),
+            e => e.ToObjectResult());
+    }
+    
+    [HttpDelete("logout")]
+    public async Task<ActionResult<Unit>> Logout([FromBody] RefreshTokenDto refreshTokenDto,
+        CancellationToken cancellationToken)
+    {
+        var input = new LogoutCommand
+        {
+            Token = refreshTokenDto.RefreshToken,
+            UserId = refreshTokenDto.UserId
+        };
+        var result = await sender.Send(input, cancellationToken);
+        return result.Match<ActionResult<Unit>>(
+            u => Ok("Logged out"),
             e => e.ToObjectResult());
     }
 }
