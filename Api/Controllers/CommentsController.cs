@@ -17,13 +17,26 @@ namespace Api.Controllers;
 public class CommentsController(
     ISender sender,
     ICommentQueries commentQueries,
-    IJwtDecoder jwtDecoder) : ControllerBase
+    IJwtDecoder jwtDecoder,
+    ICache cache) : ControllerBase
 {
+    private const string CacheKeyAllComments = "comments_all";
+
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<CommentDto>>> GetAll(CancellationToken cancellationToken)
     {
+        var cachedEntities = await cache.Get<List<CommentDto>>(CacheKeyAllComments);
+        if (cachedEntities != null)
+        {
+            return cachedEntities;
+        }
+
         var entities = await commentQueries.GetAll(cancellationToken);
-        return entities.Select(CommentDto.FromDomainModel).ToList();
+        var result = entities.Select(CommentDto.FromDomainModel).ToList();
+
+        await cache.Set(CacheKeyAllComments, result);
+
+        return result;
     }
 
     [HttpGet("{commentId:guid}")]
@@ -31,13 +44,28 @@ public class CommentsController(
         [FromRoute] Guid commentId,
         CancellationToken cancellationToken)
     {
+        var cacheKey = $"comment_{commentId}";
+
+        var cachedEntity = await cache.Get<CommentDto>(cacheKey);
+        if (cachedEntity != null)
+        {
+            return cachedEntity;
+        }
+
         var entity = await commentQueries.GetById(new CommentId(commentId), cancellationToken);
 
         return entity.Match<ActionResult<CommentDto>>(
-            u => CommentDto.FromDomainModel(u),
+            c =>
+            {
+                var result = CommentDto.FromDomainModel(c);
+
+                cache.Set(cacheKey, result);
+
+                return result;
+            },
             () => NotFound());
     }
-    
+
     [HttpPost]
     public async Task<ActionResult<CommentDto>> Create(
         [FromBody] CommentDto request,
@@ -57,10 +85,16 @@ public class CommentsController(
         var result = await sender.Send(input, cancellationToken);
 
         return result.Match<ActionResult<CommentDto>>(
-            f => CommentDto.FromDomainModel(f),
+            c =>
+            {
+                cache.Delete(CacheKeyAllComments);
+                cache.Delete($"comment_{c.Id}");
+
+                return CommentDto.FromDomainModel(c);
+            },
             e => e.ToObjectResult());
     }
-    
+
     [HttpPut]
     public async Task<ActionResult<CommentDto>> Update(
         [FromBody] CommentDto request,
@@ -80,7 +114,13 @@ public class CommentsController(
         var result = await sender.Send(input, cancellationToken);
 
         return result.Match<ActionResult<CommentDto>>(
-            u => CommentDto.FromDomainModel(u),
+            c =>
+            {
+                cache.Delete(CacheKeyAllComments);
+                cache.Delete($"comment_{c.Id}");
+
+                return CommentDto.FromDomainModel(c);
+            },
             e => e.ToObjectResult());
     }
 
@@ -102,7 +142,13 @@ public class CommentsController(
         var result = await sender.Send(input, cancellationToken);
 
         return result.Match<ActionResult<CommentDto>>(
-            u => CommentDto.FromDomainModel(u),
+            c =>
+            {
+                cache.Delete(CacheKeyAllComments);
+                cache.Delete($"comment_{c.Id}");
+
+                return CommentDto.FromDomainModel(c);
+            },
             e => e.ToObjectResult());
     }
 }

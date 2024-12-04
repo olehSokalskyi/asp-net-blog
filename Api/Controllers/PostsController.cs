@@ -17,13 +17,26 @@ namespace Api.Controllers;
 public class PostsController(
     ISender sender,
     IPostQueries postQueries,
-    IJwtDecoder jwtDecoder) : ControllerBase
+    IJwtDecoder jwtDecoder,
+    ICache cache) : ControllerBase
 {
+    private const string CacheKeyAllPosts = "posts_all";
+
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<PostDto>>> GetAll(CancellationToken cancellationToken)
     {
+        var cachedEntities = await cache.Get<List<PostDto>>(CacheKeyAllPosts);
+        if (cachedEntities != null)
+        {
+            return cachedEntities;
+        }
+
         var entities = await postQueries.GetAll(cancellationToken);
-        return entities.Select(PostDto.FromDomainModel).ToList();
+        var result = entities.Select(PostDto.FromDomainModel).ToList();
+
+        await cache.Set(CacheKeyAllPosts, result);
+
+        return result;
     }
 
     [HttpGet("{postId:guid}")]
@@ -31,13 +44,28 @@ public class PostsController(
         [FromRoute] Guid postId,
         CancellationToken cancellationToken)
     {
+        var cacheKey = $"post_{postId}";
+
+        var cachedEntity = await cache.Get<PostDto>(cacheKey);
+        if (cachedEntity != null)
+        {
+            return cachedEntity;
+        }
+
         var entity = await postQueries.GetById(new PostId(postId), cancellationToken);
 
         return entity.Match<ActionResult<PostDto>>(
-            u => PostDto.FromDomainModel(u),
+            p =>
+            {
+                var result = PostDto.FromDomainModel(p);
+
+                cache.Set(CacheKeyAllPosts, result);
+
+                return result;
+            },
             () => NotFound());
     }
-    
+
     [HttpPost]
     public async Task<ActionResult<PostDto>> Create(
         [FromForm] PostDto request,
@@ -57,10 +85,16 @@ public class PostsController(
         var result = await sender.Send(input, cancellationToken);
 
         return result.Match<ActionResult<PostDto>>(
-            f => PostDto.FromDomainModel(f),
+            p =>
+            {
+                cache.Delete(CacheKeyAllPosts);
+                cache.Delete($"post_{p.Id}");
+
+                return PostDto.FromDomainModel(p);
+            },
             e => e.ToObjectResult());
     }
-    
+
     [HttpPut]
     public async Task<ActionResult<PostDto>> Update(
         [FromBody] PostDto request,
@@ -80,7 +114,13 @@ public class PostsController(
         var result = await sender.Send(input, cancellationToken);
 
         return result.Match<ActionResult<PostDto>>(
-            u => PostDto.FromDomainModel(u),
+            p =>
+            {
+                cache.Delete(CacheKeyAllPosts);
+                cache.Delete($"post_{p.Id}");
+
+                return PostDto.FromDomainModel(p);
+            },
             e => e.ToObjectResult());
     }
 
@@ -102,7 +142,13 @@ public class PostsController(
         var result = await sender.Send(input, cancellationToken);
 
         return result.Match<ActionResult<PostDto>>(
-            u => PostDto.FromDomainModel(u),
+            p =>
+            {
+                cache.Delete(CacheKeyAllPosts);
+                cache.Delete($"post_{p.Id}");
+
+                return PostDto.FromDomainModel(p);
+            },
             e => e.ToObjectResult());
     }
 }

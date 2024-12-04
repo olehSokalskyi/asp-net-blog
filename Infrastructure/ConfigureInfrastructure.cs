@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Authentication;
+using Infrastructure.Cache;
 using Infrastructure.Persistence;
 using Infrastructure.S3;
 using Microsoft.Extensions.Configuration;
@@ -13,5 +14,6 @@ public static class ConfigureInfrastructure
         services.AddPersistence(configuration);
         services.AddAuthenticationJwt();
         services.AddS3();
+        services.AddCache(configuration);
     }
 }

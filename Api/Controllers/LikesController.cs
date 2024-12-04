@@ -20,15 +20,27 @@ namespace Api.Controllers;
 public class LikesController(
     ISender sender,
     ILikeQueries likeQueries,
-    IJwtDecoder jwtDecoder) : ControllerBase
+    IJwtDecoder jwtDecoder,
+    ICache cache) : ControllerBase
 {
+    private const string CacheKeyAllLikes = "likes_all";
+
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<LikeDto>>> GetAll(
         CancellationToken cancellationToken)
     {
-        var entities = await likeQueries.GetAll(cancellationToken);
+        var cachedEntities = await cache.Get<List<LikeDto>>(CacheKeyAllLikes);
+        if (cachedEntities != null)
+        {
+            return cachedEntities;
+        }
 
-        return entities.Select(LikeDto.FromDomainModel).ToList();
+        var entities = await likeQueries.GetAll(cancellationToken);
+        var result = entities.Select(LikeDto.FromDomainModel).ToList();
+
+        await cache.Set(CacheKeyAllLikes, result);
+
+        return result;
     }
 
     [HttpGet("{likeId:guid}")]
@@ -36,10 +48,25 @@ public class LikesController(
         [FromRoute] Guid likeId,
         CancellationToken cancellationToken)
     {
+        var cacheKey = $"like_{likeId}";
+
+        var cachedEntity = await cache.Get<LikeDto>(cacheKey);
+        if (cachedEntity != null)
+        {
+            return cachedEntity;
+        }
+
         var entity = await likeQueries.GetById(new LikeId(likeId), cancellationToken);
 
         return entity.Match<ActionResult<LikeDto>>(
-            l => LikeDto.FromDomainModel(l),
+            l =>
+            {
+                var result = LikeDto.FromDomainModel(l);
+
+                cache.Set(cacheKey, result);
+
+                return result;
+            },
             () => NotFound());
     }
 
@@ -69,7 +96,7 @@ public class LikesController(
         var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
         var claims = jwtDecoder.DecodeToken(token);
         var userIdClaim = claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
-        
+
         var input = new CreateLikeCommand
         {
             UserId = Guid.Parse(userIdClaim),
@@ -79,7 +106,13 @@ public class LikesController(
         var result = await sender.Send(input, cancellationToken);
 
         return result.Match<ActionResult<LikeDto>>(
-            l => LikeDto.FromDomainModel(l),
+            l =>
+            {
+                cache.Delete(CacheKeyAllLikes);
+                cache.Delete($"like_{l.Id}");
+
+                return LikeDto.FromDomainModel(l);
+            },
             e => e.ToObjectResult());
     }
 
@@ -96,7 +129,13 @@ public class LikesController(
         var result = await sender.Send(input, cancellationToken);
 
         return result.Match<ActionResult<LikeDto>>(
-            l => LikeDto.FromDomainModel(l),
+            l =>
+            {
+                cache.Delete(CacheKeyAllLikes);
+                cache.Delete($"like_{l.Id}");
+
+                return LikeDto.FromDomainModel(l);
+            },
             e => e.ToObjectResult());
     }
 }
