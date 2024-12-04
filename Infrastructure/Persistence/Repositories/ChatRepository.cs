@@ -14,7 +14,7 @@ public class ChatRepository(ApplicationDbContext context) : IChatRepository
 
         return chat;
     }
-    
+
     public async Task<Option<Chat>> GetByName(string name, CancellationToken cancellationToken)
     {
         var entity = await context.Chats
@@ -23,7 +23,7 @@ public class ChatRepository(ApplicationDbContext context) : IChatRepository
 
         return entity == null ? Option.None<Chat>() : Option.Some(entity);
     }
-    
+
     public async Task<Option<Chat>> GetById(ChatId id, CancellationToken cancellationToken)
     {
         var entity = await context.Chats
@@ -32,7 +32,7 @@ public class ChatRepository(ApplicationDbContext context) : IChatRepository
 
         return entity == null ? Option.None<Chat>() : Option.Some(entity);
     }
-    
+
     public async Task<Chat> Update(Chat chat, CancellationToken cancellationToken)
     {
         context.Chats.Update(chat);

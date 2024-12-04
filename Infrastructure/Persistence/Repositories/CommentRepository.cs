@@ -30,7 +30,10 @@ public class CommentRepository(ApplicationDbContext context) : ICommentRepositor
         return entity == null ? Option.None<Comment>() : Option.Some(entity);
     }
 
-    public async Task<Option<Comment>> GetByCommentAndUserId(CommentId commentId, UserId userId, CancellationToken cancellationToken)
+    public async Task<Option<Comment>> GetByCommentAndUserId(
+        CommentId commentId,
+        UserId userId,
+        CancellationToken cancellationToken)
     {
         var entity = await context.Comments
             .AsNoTracking()

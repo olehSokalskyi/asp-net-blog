@@ -9,13 +9,15 @@ public abstract class SubscriberException(SubscriberId id, string message, Excep
     public SubscriberId SubscriberId { get; } = id;
 }
 
-public class SubscriberNotFoundException(SubscriberId id) : SubscriberException(id, $"Subscriber under id: {id} not found");
+public class SubscriberNotFoundException(SubscriberId id)
+    : SubscriberException(id, $"Subscriber under id: {id} not found");
 
-public class SubscriberAlreadyExistsException(SubscriberId id) : SubscriberException(id, $"Subscriber already exists: {id}");
+public class SubscriberAlreadyExistsException(SubscriberId id)
+    : SubscriberException(id, $"Subscriber already exists: {id}");
 
 public class SubscriberUnknownException(SubscriberId id, Exception innerException)
     : SubscriberException(id, $"Unknown exception for the subscriber under id: {id}", innerException);
-    
+
 public class SubscriberUserNotFoundException(UserId userId)
     : SubscriberException(SubscriberId.Empty(), $"User under id:{userId} not found");
 

@@ -1,4 +1,4 @@
-﻿namespace Domain.Users;
+﻿namespace Domain.RefreshTokens;
 
 public record RefreshTokenId(Guid Value)
 {

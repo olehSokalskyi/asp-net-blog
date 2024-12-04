@@ -1,5 +1,3 @@
-using Domain.Users;
-
 namespace Domain.Genders;
 
 public class Gender

@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Api.Modules.Validators;
 
-public class UserDtoValidator: AbstractValidator<UserDto>
+public class UserDtoValidator : AbstractValidator<UserDto>
 {
     public UserDtoValidator()
     {
@@ -12,17 +12,8 @@ public class UserDtoValidator: AbstractValidator<UserDto>
         RuleFor(x => x.Username).NotEmpty().MaximumLength(255).MinimumLength(3);
     }
 }
-// public class UserLoginDtoValidator: AbstractValidator<UserLoginDto>
-// {
-//     public UserLoginDtoValidator()
-//     {
-//         RuleFor(x => x.email).NotEmpty().EmailAddress();
-//         RuleFor(x => x.Password).NotEmpty().MinimumLength(8);
-//     }
-// }
 
-
-public class CreateUserDtoValidator: AbstractValidator<CreateUserDto>
+public class CreateUserDtoValidator : AbstractValidator<CreateUserDto>
 {
     public CreateUserDtoValidator()
     {
@@ -34,7 +25,7 @@ public class CreateUserDtoValidator: AbstractValidator<CreateUserDto>
     }
 }
 
-public class UserUpdatePasswordDtoValidator: AbstractValidator<UserUpdatePasswordDto>
+public class UserUpdatePasswordDtoValidator : AbstractValidator<UserUpdatePasswordDto>
 {
     public UserUpdatePasswordDtoValidator()
     {
@@ -43,11 +34,10 @@ public class UserUpdatePasswordDtoValidator: AbstractValidator<UserUpdatePasswor
     }
 }
 
-public class UserUpdateEmailDtoValidator: AbstractValidator<UserUpdateEmailDto>
+public class UserUpdateEmailDtoValidator : AbstractValidator<UserUpdateEmailDto>
 {
     public UserUpdateEmailDtoValidator()
     {
         RuleFor(x => x.Email).NotEmpty().EmailAddress();
     }
 }
-

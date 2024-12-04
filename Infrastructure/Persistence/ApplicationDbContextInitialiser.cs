@@ -1,5 +1,4 @@
-﻿using Application.Common.Interfaces;
-using Domain.Genders;
+﻿using Domain.Genders;
 using Domain.Roles;
 using Domain.Users;
 using Infrastructure.Persistence.Converters;

@@ -17,26 +17,19 @@ public class CreateArchivedPostCommandHandler(
     IPostRepository postRepository)
     : IRequestHandler<CreateArchivedPostCommand, Result<ArchivedPost, ArchivedPostException>>
 {
-    public async Task<Result<ArchivedPost, ArchivedPostException>> Handle(CreateArchivedPostCommand request,
+    public async Task<Result<ArchivedPost, ArchivedPostException>> Handle(
+        CreateArchivedPostCommand request,
         CancellationToken cancellationToken)
     {
-        try
-        {
-            var postId = new PostId(request.PostId);
-            
-            var post = await postRepository.GetById(postId, cancellationToken);
-            
-            return await post.Match(
-                async p => await CreateEntity(p.Id, cancellationToken),
-                () => Task.FromResult<Result<ArchivedPost, ArchivedPostException>>(
-                    new ArchivedPostForPostNotFoundException(postId))
-            );
+        var postId = new PostId(request.PostId);
 
-        }
-        catch (Exception exception)
-        {
-            return new ArchivedPostUnknownException(ArchivedPostId.Empty(), exception);
-        }
+        var post = await postRepository.GetById(postId, cancellationToken);
+
+        return await post.Match(
+            async p => await CreateEntity(p.Id, cancellationToken),
+            () => Task.FromResult<Result<ArchivedPost, ArchivedPostException>>(
+                new ArchivedPostForPostNotFoundException(postId))
+        );
     }
 
     private async Task<Result<ArchivedPost, ArchivedPostException>> CreateEntity(

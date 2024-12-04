@@ -25,8 +25,7 @@ public class LikesController(
     private const string CacheKeyAllLikes = "likes_all";
 
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<LikeDto>>> GetAll(
-        CancellationToken cancellationToken)
+    public async Task<ActionResult<IReadOnlyList<LikeDto>>> GetAll(CancellationToken cancellationToken)
     {
         var cachedEntities = await cache.Get<List<LikeDto>>(CacheKeyAllLikes);
         if (cachedEntities != null)

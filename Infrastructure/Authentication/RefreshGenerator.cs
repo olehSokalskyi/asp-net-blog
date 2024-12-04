@@ -1,11 +1,11 @@
 ﻿using System.Security.Cryptography;
 using Application.Common.Interfaces;
-using Application.Common.Interfaces.Repositories;
+using Domain.RefreshTokens;
 using Domain.Users;
 
 namespace Infrastructure.Authentication;
 
-public class RefreshTokenGenerator: IRefreshTokenGenerator
+public class RefreshTokenGenerator : IRefreshTokenGenerator
 {
     private const int TokenLength = 64;
 
@@ -14,6 +14,7 @@ public class RefreshTokenGenerator: IRefreshTokenGenerator
         var id = RefreshTokenId.New();
         var token = GenerateSecureToken();
         var expires = DateTime.UtcNow.AddDays(7);
+        
         return RefreshToken.New(id, userId, token, expires);
     }
 
@@ -21,7 +22,9 @@ public class RefreshTokenGenerator: IRefreshTokenGenerator
     {
         var token = GenerateSecureToken();
         var expires = DateTime.UtcNow.AddDays(7);
+        
         refreshToken.UpdateToken(token, expires);
+        
         return refreshToken;
     }
 

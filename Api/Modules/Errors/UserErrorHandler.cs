@@ -11,10 +11,14 @@ public static class UserErrorHandler
         {
             StatusCode = exception switch
             {
-                UserAlreadyExistsException or UserWithEmailAlreadyExistsException
+                UserNotFoundException
+                    or UserWithUsernameNotFoundException
+                    or UserRoleNotFoundException
+                    or UserRoleNotFoundExceptionById
+                    or UserRefreshTokenNotFoundException => StatusCodes.Status404NotFound,
+                UserAlreadyExistsException
+                    or UserWithEmailAlreadyExistsException
                     or UserWithUsernameAlreadyExistsException => StatusCodes.Status409Conflict,
-                UserNotFoundException or UserWithUsernameNotFoundException or UserRoleNotFoundException
-                    or UserRoleNotFoundExceptionById or UserRefreshTokenNotFoundException => StatusCodes.Status404NotFound,
                 UserUnknownException => StatusCodes.Status500InternalServerError,
                 UserIncorrectPasswordException => StatusCodes.Status401Unauthorized,
                 _ => throw new NotImplementedException("User error handler does not implemented")

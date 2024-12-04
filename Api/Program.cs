@@ -1,3 +1,4 @@
+using System.Text;
 using Api.Modules;
 using Api.Modules.ChatHub;
 using Application;
@@ -21,11 +22,12 @@ builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(x =>
     {
+        var jwtSecret = builder.Configuration["JwtSecret"];
+
         x.TokenValidationParameters = new TokenValidationParameters
         {
             IssuerSigningKey =
-                new SymmetricSecurityKey(
-                    "LifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGood"u8.ToArray()),
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
             ValidIssuer = "https://localhost:5001/",
             ValidAudience = "https://localhost:5001/",
             ValidateLifetime = true,
@@ -67,6 +69,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 builder.Services.SetupServices();
 builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -85,6 +88,7 @@ app.MapHub<ChatHub>("/chathub");
 
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.Run();
 
 public partial class Program;

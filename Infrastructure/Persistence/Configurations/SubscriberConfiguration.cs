@@ -15,9 +15,11 @@ public class SubscriberConfiguration : IEntityTypeConfiguration<Subscriber>
         builder.Property(x => x.CreatedAt)
             .HasConversion(new DateTimeUtcConverter())
             .HasDefaultValueSql("timezone('utc', now())");
+        
         builder.HasOne(x => x.User)
             .WithMany(x => x.Subscribers)
             .HasForeignKey(x => x.UserId);
+        
         builder.HasOne(x => x.FollowUser)
             .WithMany(x => x.Followers)
             .HasForeignKey(x => x.FollowUserId);

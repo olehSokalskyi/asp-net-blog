@@ -13,8 +13,7 @@ namespace Api.Controllers;
 public class ArchivedPostsController(ISender sender, IArchivedPostQueries archivedPostQueries) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<ArchivedPostDto>>> GetAll(
-        CancellationToken cancellationToken)
+    public async Task<ActionResult<IReadOnlyList<ArchivedPostDto>>> GetAll(CancellationToken cancellationToken)
     {
         var entities = await archivedPostQueries.GetAll(cancellationToken);
 

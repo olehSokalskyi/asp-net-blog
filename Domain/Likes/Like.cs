@@ -6,11 +6,14 @@ namespace Domain.Likes;
 public class Like
 {
     public LikeId Id { get; }
-    public Post Post { get; }
-    public PostId PostId { get; }
-    public UserId UserId { get; }
-    public User User { get; }
+    
     public DateTime CreatedAt { get; private set; }
+    
+    public PostId PostId { get; }
+    public Post? Post { get; }
+    
+    public UserId UserId { get; }
+    public User? User { get; }
     
     private Like(LikeId id, PostId postId, UserId userId, DateTime createdAt)
     {
