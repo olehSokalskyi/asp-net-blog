@@ -7,11 +7,13 @@ public static class ArchivedPostErrorHandler
 {
     public static ObjectResult ToObjectResult(this ArchivedPostException exception)
     {
-        return new ObjectResult(exception.ArchivedPostId)
+        return new ObjectResult(exception.Message)
         {
             StatusCode = exception switch
             {
-                ArchivedPostNotFoundException => StatusCodes.Status404NotFound,
+                ArchivedPostNotFoundException
+                    or ArchivedPostForPostNotFoundException => StatusCodes.Status404NotFound,
+                ArchivedPostAlreadyExistsException => StatusCodes.Status409Conflict,
                 ArchivedPostUnknownException => StatusCodes.Status500InternalServerError,
                 _ => throw new NotImplementedException("Archived post error handler does not implemented")
             }

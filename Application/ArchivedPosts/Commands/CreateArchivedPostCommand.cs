@@ -3,6 +3,7 @@ using Application.Common;
 using Application.Common.Interfaces.Repositories;
 using Domain.ArchivedPosts;
 using Domain.Posts;
+using Domain.Users;
 using MediatR;
 
 namespace Application.ArchivedPosts.Commands;
@@ -10,6 +11,7 @@ namespace Application.ArchivedPosts.Commands;
 public record CreateArchivedPostCommand : IRequest<Result<ArchivedPost, ArchivedPostException>>
 {
     public Guid PostId { get; init; }
+    public Guid UserId { get; init; }
 }
 
 public class CreateArchivedPostCommandHandler(
@@ -22,11 +24,20 @@ public class CreateArchivedPostCommandHandler(
         CancellationToken cancellationToken)
     {
         var postId = new PostId(request.PostId);
+        var userId = new UserId(request.UserId);
 
-        var post = await postRepository.GetById(postId, cancellationToken);
+        var existingPost = await postRepository.GetByPostAndUserId(postId, userId, cancellationToken);
 
-        return await post.Match(
-            async p => await CreateEntity(p.Id, cancellationToken),
+        return await existingPost.Match(
+            async p =>
+            {
+                var existingArchived = await archivedPostRepository.GetByPostId(p.Id, cancellationToken);
+
+                return await existingArchived.Match(
+                    a => Task.FromResult<Result<ArchivedPost, ArchivedPostException>>(
+                        new ArchivedPostAlreadyExistsException(a.Id)),
+                    async () => await CreateEntity(p.Id, cancellationToken));
+            },
             () => Task.FromResult<Result<ArchivedPost, ArchivedPostException>>(
                 new ArchivedPostForPostNotFoundException(postId))
         );

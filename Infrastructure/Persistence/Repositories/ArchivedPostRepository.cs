@@ -1,6 +1,8 @@
 using Domain.ArchivedPosts;
 using Application.Common.Interfaces.Queries;
 using Application.Common.Interfaces.Repositories;
+using Domain.Posts;
+using Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using Optional;
 
@@ -20,6 +22,29 @@ public class ArchivedPostRepository(ApplicationDbContext context) : IArchivedPos
         var entity = await context.ArchivedPosts
             .AsNoTracking()
             .FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
+
+        return entity == null ? Option.None<ArchivedPost>() : Option.Some(entity);
+    }
+
+    public async Task<Option<ArchivedPost>> GetByPostId(PostId postId, CancellationToken cancellationToken)
+    {
+        var entity = await context.ArchivedPosts
+            .AsNoTracking()
+            .FirstOrDefaultAsync(a => a.PostId == postId, cancellationToken);
+
+        return entity == null ? Option.None<ArchivedPost>() : Option.Some(entity);
+    }
+
+    public async Task<Option<ArchivedPost>> GetByArchivedPostAndUserId(
+        ArchivedPostId id,
+        UserId userId,
+        CancellationToken cancellationToken)
+    {
+        var entity = await context.ArchivedPosts
+            .AsNoTracking()
+            .Include(x => x.Post)
+            .ThenInclude(p => p.User)
+            .FirstOrDefaultAsync(a => a.Id == id && a.Post.UserId == userId, cancellationToken);
 
         return entity == null ? Option.None<ArchivedPost>() : Option.Some(entity);
     }

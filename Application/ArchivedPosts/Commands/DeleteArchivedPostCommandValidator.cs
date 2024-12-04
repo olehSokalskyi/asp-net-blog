@@ -7,5 +7,6 @@ public class DeleteArchivedPostCommandValidator : AbstractValidator<DeleteArchiv
     public DeleteArchivedPostCommandValidator()
     {
         RuleFor(x => x.ArchivedPostsId).NotEmpty(); 
+        RuleFor(x => x.UserId).NotEmpty(); 
     }
 }

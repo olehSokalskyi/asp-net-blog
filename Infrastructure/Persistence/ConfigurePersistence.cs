@@ -34,20 +34,39 @@ public static class ConfigurePersistence
 
     private static void AddRepositories(this IServiceCollection services)
     {
-        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<UserRepository>();
+        services.AddScoped<IUserRepository>(provider => provider.GetRequiredService<IUserRepository>());
+        services.AddScoped<IUserQueries>(provider => provider.GetRequiredService<UserRepository>());
+        
         services.AddScoped<IChatRepository, ChatRepository>();
+        
+        services.AddScoped<ChatRepository>();
+        services.AddScoped<IChatRepository>(provider => provider.GetRequiredService<ChatRepository>());
+        
         services.AddScoped<IMessageRepository, MessageRepository>();
-        services.AddScoped<IRoleRepository, RoleRepository>();
-        services.AddScoped<IUserQueries, UserRepository>();
-        services.AddScoped<IRoleQueries, RoleRepository>();
-        services.AddScoped<IGenderRepository, GenderRepository>();
-        services.AddScoped<ILikeRepository, LikeRepository>();
-        services.AddScoped<ILikeQueries, LikeRepository>();
-        services.AddScoped<IGenderQueries, GenderRepository>();
-        services.AddScoped<ISubscriberRepository, SubscriberRepository>();
-        services.AddScoped<ISubscriberQueries, SubscriberRepository>();
-        services.AddScoped<IArchivedPostRepository, ArchivedPostRepository>();
-        services.AddScoped<IArchivedPostQueries, ArchivedPostRepository>();
+        
+        services.AddScoped<MessageRepository>();
+        services.AddScoped<IMessageRepository>(provider => provider.GetRequiredService<MessageRepository>());
+        
+        services.AddScoped<RoleRepository>();
+        services.AddScoped<IRoleRepository>(provider => provider.GetRequiredService<RoleRepository>());
+        services.AddScoped<IRoleQueries>(provider => provider.GetRequiredService<RoleRepository>());
+        
+        services.AddScoped<GenderRepository>();
+        services.AddScoped<IGenderRepository>(provider => provider.GetRequiredService<GenderRepository>());
+        services.AddScoped<IGenderQueries>(provider => provider.GetRequiredService<GenderRepository>());
+        
+        services.AddScoped<LikeRepository>();
+        services.AddScoped<ILikeRepository>(provider => provider.GetRequiredService<LikeRepository>());
+        services.AddScoped<ILikeQueries>(provider => provider.GetRequiredService<LikeRepository>());
+        
+        services.AddScoped<SubscriberRepository>();
+        services.AddScoped<ISubscriberRepository>(provider => provider.GetRequiredService<SubscriberRepository>());
+        services.AddScoped<ISubscriberQueries>(provider => provider.GetRequiredService<SubscriberRepository>());
+        
+        services.AddScoped<ArchivedPostRepository>();
+        services.AddScoped<IArchivedPostRepository>(provider => provider.GetRequiredService<ArchivedPostRepository>());
+        services.AddScoped<IArchivedPostQueries>(provider => provider.GetRequiredService<ArchivedPostRepository>());
         
         services.AddScoped<CategoryRepository>();
         services.AddScoped<ICategoryRepository>(provider => provider.GetRequiredService<CategoryRepository>());
