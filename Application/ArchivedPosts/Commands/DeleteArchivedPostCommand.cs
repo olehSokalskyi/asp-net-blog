@@ -11,7 +11,8 @@ public record DeleteArchivedPostCommand : IRequest<Result<ArchivedPost, Archived
     public required Guid ArchivedPostsId { get; init; }
 }
 
-public class DeleteArchivedPostCommandHandler(IArchivedPostRepository archivedPostRepository)
+public class DeleteArchivedPostCommandHandler(
+    IArchivedPostRepository archivedPostRepository)
     : IRequestHandler<DeleteArchivedPostCommand, Result<ArchivedPost, ArchivedPostException>>
 {
     public async Task<Result<ArchivedPost, ArchivedPostException>> Handle(
@@ -24,10 +25,13 @@ public class DeleteArchivedPostCommandHandler(IArchivedPostRepository archivedPo
 
         return await existingArchivedPost.Match<Task<Result<ArchivedPost, ArchivedPostException>>>(
             async a => await DeleteEntity(a, cancellationToken),
-            () => Task.FromResult<Result<ArchivedPost, ArchivedPostException>>(new ArchivedPostNotFoundException(archivedPostId)));
+            () => Task.FromResult<Result<ArchivedPost, ArchivedPostException>>(
+                new ArchivedPostNotFoundException(archivedPostId)));
     }
 
-    public async Task<Result<ArchivedPost, ArchivedPostException>> DeleteEntity(ArchivedPost archivedPost, CancellationToken cancellationToken)
+    private async Task<Result<ArchivedPost, ArchivedPostException>> DeleteEntity(
+        ArchivedPost archivedPost,
+        CancellationToken cancellationToken)
     {
         try
         {

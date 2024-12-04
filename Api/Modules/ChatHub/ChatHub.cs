@@ -10,7 +10,7 @@ public class ChatHub(ISender sender) : Hub
 {
     public async Task SendMessage(MessageDto message)
     {
-        var input = new CreateMessageCommand()
+        var input = new CreateMessageCommand
         {
             Content = message.Content,
             UserId = message.UserId,

@@ -2,7 +2,12 @@
 
 namespace Api.Dtos;
 
-public record MessageDto(Guid? Id, string Content, Guid UserId, Guid ChatId, DateTime? CreatedAt)
+public record MessageDto(
+    Guid? Id,
+    string Content,
+    Guid UserId,
+    Guid ChatId,
+    DateTime? CreatedAt)
 {
     public static MessageDto FromDomainModel(Message message)
         => new(

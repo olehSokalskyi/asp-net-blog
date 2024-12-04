@@ -13,8 +13,7 @@ namespace Api.Controllers;
 public class GendersController(ISender sender, IGenderQueries genderQueries) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<GenderDto>>> GetAll(
-        CancellationToken cancellationToken)
+    public async Task<ActionResult<IReadOnlyList<GenderDto>>> GetAll(CancellationToken cancellationToken)
     {
         var entities = await genderQueries.GetAll(cancellationToken);
 

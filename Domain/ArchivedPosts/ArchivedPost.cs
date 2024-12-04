@@ -5,9 +5,11 @@ namespace Domain.ArchivedPosts;
 public class ArchivedPost
 {
     public ArchivedPostId Id { get; }
-    public Post Post { get; }
-    public PostId PostId { get; }
+    
     public DateTime ArchivedAt { get; private set; }
+    
+    public PostId PostId { get; }
+    public Post? Post { get; }
     
     private ArchivedPost(ArchivedPostId id, PostId postId, DateTime archivedAt)
     {

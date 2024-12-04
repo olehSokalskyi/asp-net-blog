@@ -11,8 +11,8 @@ public record DeleteGenderCommand : IRequest<Result<Gender, GenderException>>
     public required Guid GenderId { get; init; }
 }
 
-public class DeleteGenderCommandHandler(IGenderRepository genderRepository)
-    : IRequestHandler<DeleteGenderCommand, Result<Gender, GenderException>>
+public class DeleteGenderCommandHandler(
+    IGenderRepository genderRepository) : IRequestHandler<DeleteGenderCommand, Result<Gender, GenderException>>
 {
     public async Task<Result<Gender, GenderException>> Handle(
         DeleteGenderCommand request,

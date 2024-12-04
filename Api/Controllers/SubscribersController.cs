@@ -14,20 +14,20 @@ namespace Api.Controllers;
 public class SubscribersController(ISender sender, ISubscriberQueries subscriberQueries) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<SubscriberDto>>> GetAll(
-        CancellationToken cancellationToken)
+    public async Task<ActionResult<IReadOnlyList<SubscriberDto>>> GetAll(CancellationToken cancellationToken)
     {
         var entities = await subscriberQueries.GetAll(cancellationToken);
 
         return entities.Select(SubscriberDto.FromDomainModel).ToList();
     }
-    
+
     [HttpGet("{subscriberId:guid}")]
     public async Task<ActionResult<SubscriberDto>> GetById(
-        [FromRoute] Guid subscriberId, 
+        [FromRoute] Guid subscriberId,
         CancellationToken cancellationToken)
     {
         var entity = await subscriberQueries.GetById(new SubscriberId(subscriberId), cancellationToken);
+
         return entity.Match<ActionResult<SubscriberDto>>(
             l => SubscriberDto.FromDomainModel(l),
             () => NotFound());
@@ -35,22 +35,24 @@ public class SubscribersController(ISender sender, ISubscriberQueries subscriber
 
     [HttpGet("user/{userId:guid}")]
     public async Task<ActionResult<IReadOnlyList<SubscriberDto>>> GetByUserId(
-        [FromRoute] Guid userId, 
+        [FromRoute] Guid userId,
         CancellationToken cancellationToken)
     {
         var entities = await subscriberQueries.GetByUserId(new UserId(userId), cancellationToken);
+
         return entities.Select(SubscriberDto.FromDomainModel).ToList();
     }
 
     [HttpGet("follow/{followUserId:guid}")]
     public async Task<ActionResult<IReadOnlyList<SubscriberDto>>> GetByFollowUserId(
-        [FromRoute] Guid followUserId, 
+        [FromRoute] Guid followUserId,
         CancellationToken cancellationToken)
     {
         var entities = await subscriberQueries.GetByFollowUserId(new UserId(followUserId), cancellationToken);
+
         return entities.Select(SubscriberDto.FromDomainModel).ToList();
     }
-    
+
     [HttpPost]
     public async Task<ActionResult<SubscriberDto>> Create(
         [FromBody] SubscriberDto request,
@@ -58,7 +60,7 @@ public class SubscribersController(ISender sender, ISubscriberQueries subscriber
     {
         var input = new CreateSubscriberCommand
         {
-            UserId = request.UserId,
+            UserId = request.UserId!.Value,
             FollowUserId = request.FollowUserId.Value
         };
 
@@ -68,10 +70,10 @@ public class SubscribersController(ISender sender, ISubscriberQueries subscriber
             s => SubscriberDto.FromDomainModel(s),
             e => e.ToObjectResult());
     }
-    
+
     [HttpDelete("{subscriberId:guid}")]
     public async Task<ActionResult<SubscriberDto>> Delete(
-        [FromRoute] Guid subscriberId, 
+        [FromRoute] Guid subscriberId,
         CancellationToken cancellationToken)
     {
         var input = new DeleteSubscriberCommand()

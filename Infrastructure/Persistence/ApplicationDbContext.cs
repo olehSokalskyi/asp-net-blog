@@ -7,6 +7,7 @@ using Domain.Genders;
 using Domain.Likes;
 using Domain.Messages;
 using Domain.Posts;
+using Domain.RefreshTokens;
 using Domain.Roles;
 using Domain.Subscribers;
 using Domain.Users;

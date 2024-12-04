@@ -18,31 +18,23 @@ public class CreateSubscriberCommandHandler(
     IUserRepository userRepository)
     : IRequestHandler<CreateSubscriberCommand, Result<Subscriber, SubscriberException>>
 {
-    public async Task<Result<Subscriber, SubscriberException>> Handle(CreateSubscriberCommand request,
+    public async Task<Result<Subscriber, SubscriberException>> Handle(
+        CreateSubscriberCommand request,
         CancellationToken cancellationToken)
     {
-        try
-        {
-            var userId = new UserId(request.UserId);
-            var followUserId = new UserId(request.FollowUserId);
+        var userId = new UserId(request.UserId);
+        var followUserId = new UserId(request.FollowUserId);
 
-            var user = await userRepository.GetById(userId, cancellationToken);
-            var followUser = await userRepository.GetById(followUserId, cancellationToken);
+        var user = await userRepository.GetById(userId, cancellationToken);
+        var followUser = await userRepository.GetById(followUserId, cancellationToken);
 
-            return await user.Match(
-                async u => await followUser.Match(
-                    async f => await CreateEntity(u.Id, f.Id, cancellationToken),
-                    () => Task.FromResult<Result<Subscriber, SubscriberException>>(
-                        new SubscriberFollowUserNotFoundException(followUserId))),
+        return await user.Match(
+            async u => await followUser.Match(
+                async f => await CreateEntity(u.Id, f.Id, cancellationToken),
                 () => Task.FromResult<Result<Subscriber, SubscriberException>>(
-                    new SubscriberUserNotFoundException(userId)));
-
-
-        }
-        catch (Exception exception)
-        {
-            return new SubscriberUnknownException(SubscriberId.Empty(), exception);
-        }
+                    new SubscriberFollowUserNotFoundException(followUserId))),
+            () => Task.FromResult<Result<Subscriber, SubscriberException>>(
+                new SubscriberUserNotFoundException(userId)));
     }
 
     private async Task<Result<Subscriber, SubscriberException>> CreateEntity(

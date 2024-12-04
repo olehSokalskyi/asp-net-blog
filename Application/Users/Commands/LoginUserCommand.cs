@@ -22,20 +22,14 @@ public class LoginUserCommandHandler(
     IRefreshTokenRepository refreshTokenRepository)
     : IRequestHandler<LoginUserCommand, Result<AuthResult, UserException>>
 {
-    public async Task<Result<AuthResult, UserException>> Handle(LoginUserCommand request,
+    public async Task<Result<AuthResult, UserException>> Handle(
+        LoginUserCommand request,
         CancellationToken cancellationToken)
     {
-        try
-        {
-            var user = await userRepository.GetByEmail(request.Email, cancellationToken);
-            return await user.Match(
-                async u => await Authenticate(u, request.Password),
-                () => Task.FromResult<Result<AuthResult, UserException>>(new UserNotFoundException(UserId.Empty())));
-        }
-        catch (Exception exception)
-        {
-            return new UserUnknownException(UserId.Empty(), exception);
-        }
+        var user = await userRepository.GetByEmail(request.Email, cancellationToken);
+        return await user.Match(
+            async u => await Authenticate(u, request.Password),
+            () => Task.FromResult<Result<AuthResult, UserException>>(new UserNotFoundException(UserId.Empty())));
     }
 
     private async Task<Result<AuthResult, UserException>> Authenticate(User user, string password)
@@ -45,7 +39,8 @@ public class LoginUserCommandHandler(
             if (passwordHasher.VerifyPassword(password, user.Password))
             {
                 var token = tokenGenerator.GenerateToken(user);
-                var refreshToken = await refreshTokenRepository.Add(refreshTokenGenerator.Generate(user.Id), CancellationToken.None);
+                var refreshToken =
+                    await refreshTokenRepository.Add(refreshTokenGenerator.Generate(user.Id), CancellationToken.None);
 
                 user.AddRefreshToken(refreshToken);
                 await userRepository.Update(user, CancellationToken.None);

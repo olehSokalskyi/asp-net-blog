@@ -11,7 +11,8 @@ public record DeleteSubscriberCommand : IRequest<Result<Subscriber, SubscriberEx
     public required Guid SubscriberId { get; init; }
 }
 
-public class DeleteSubscriberCommandHandler(ISubscriberRepository subscriberRepository)
+public class DeleteSubscriberCommandHandler(
+    ISubscriberRepository subscriberRepository)
     : IRequestHandler<DeleteSubscriberCommand, Result<Subscriber, SubscriberException>>
 {
     public async Task<Result<Subscriber, SubscriberException>> Handle(
@@ -24,10 +25,13 @@ public class DeleteSubscriberCommandHandler(ISubscriberRepository subscriberRepo
 
         return await existingSubscriber.Match<Task<Result<Subscriber, SubscriberException>>>(
             async s => await DeleteEntity(s, cancellationToken),
-            () => Task.FromResult<Result<Subscriber, SubscriberException>>(new SubscriberNotFoundException(subscriberId)));
+            () => Task.FromResult<Result<Subscriber, SubscriberException>>(
+                new SubscriberNotFoundException(subscriberId)));
     }
 
-    public async Task<Result<Subscriber, SubscriberException>> DeleteEntity(Subscriber subscriber, CancellationToken cancellationToken)
+    private async Task<Result<Subscriber, SubscriberException>> DeleteEntity(
+        Subscriber subscriber,
+        CancellationToken cancellationToken)
     {
         try
         {

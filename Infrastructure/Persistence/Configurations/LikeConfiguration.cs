@@ -15,11 +15,15 @@ public class LikeConfiguration : IEntityTypeConfiguration<Like>
         builder.Property(x => x.CreatedAt)
             .HasConversion(new DateTimeUtcConverter())
             .HasDefaultValueSql("timezone('utc', now())");
+        
         builder.HasOne(x => x.Post)
             .WithMany(x => x.Likes)
-            .HasForeignKey(x => x.PostId);
+            .HasForeignKey(x => x.PostId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
         builder.HasOne(x => x.User)
             .WithMany(x => x.Likes)
-            .HasForeignKey(x => x.UserId);
+            .HasForeignKey(x => x.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

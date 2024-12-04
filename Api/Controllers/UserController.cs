@@ -19,6 +19,7 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
     public async Task<ActionResult<IReadOnlyList<UserDto>>> GetAll(CancellationToken cancellationToken)
     {
         var entities = await userQueries.GetAll(cancellationToken);
+        
         return entities.Select(UserDto.FromDomainModel).ToList();
     }
 
@@ -35,7 +36,9 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
     }
 
     [HttpPost("register")]
-    public async Task<ActionResult<UserDto>> Add([FromBody] CreateUserDto userDto, CancellationToken cancellationToken)
+    public async Task<ActionResult<UserDto>> Add(
+        [FromBody] CreateUserDto userDto,
+        CancellationToken cancellationToken)
     {
         var input = new CreateUserCommand
         {
@@ -45,7 +48,9 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
             Password = userDto.Password,
             Username = userDto.Username
         };
+        
         var result = await sender.Send(input, cancellationToken);
+        
         return result.Match<ActionResult<UserDto>>(
             u => UserDto.FromDomainModel(u),
             e => e.ToObjectResult());
@@ -53,7 +58,8 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
 
     [Authorize]
     [HttpPut("update-email")]
-    public async Task<ActionResult<UserDto>> UpdateEmail([FromBody] UserUpdateEmailDto userDto,
+    public async Task<ActionResult<UserDto>> UpdateEmail(
+        [FromBody] UserUpdateEmailDto userDto,
         CancellationToken cancellationToken)
     {
         var userId = Request.GetUserIdFromToken(jwtDecoder);
@@ -63,7 +69,9 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
             Email = userDto.Email,
             UserId = userId
         };
+        
         var result = await sender.Send(input, cancellationToken);
+        
         return result.Match<ActionResult<UserDto>>(
             u => UserDto.FromDomainModel(u),
             e => e.ToObjectResult());
@@ -71,7 +79,9 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
 
     [Authorize]
     [HttpPut("update-data")]
-    public async Task<ActionResult<UserDto>> UpdateData([FromBody] UserDto userDto, CancellationToken cancellationToken)
+    public async Task<ActionResult<UserDto>> UpdateData(
+        [FromBody] UserDto userDto,
+        CancellationToken cancellationToken)
     {
         var userId = Request.GetUserIdFromToken(jwtDecoder);
 
@@ -93,7 +103,8 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
 
     [Authorize]
     [HttpPut("update-password")]
-    public async Task<ActionResult<UserDto>> UpdatePassword([FromBody] UserUpdatePasswordDto userUpdatePasswordDto,
+    public async Task<ActionResult<UserDto>> UpdatePassword(
+        [FromBody] UserUpdatePasswordDto userUpdatePasswordDto,
         CancellationToken cancellationToken)
     {
         var userId = Request.GetUserIdFromToken(jwtDecoder);
@@ -113,12 +124,14 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
     }
 
     [Authorize]
-    [HttpDelete("{id}")]
-    public async Task<ActionResult<UserDto>> Delete(Guid id, CancellationToken cancellationToken)
+    [HttpDelete("{userId:guid}")]
+    public async Task<ActionResult<UserDto>> Delete(
+        [FromRoute] Guid userId,
+        CancellationToken cancellationToken)
     {
         var input = new DeleteUserCommand
         {
-            UserId = id
+            UserId = userId
         };
 
         var result = await sender.Send(input, cancellationToken);
@@ -129,7 +142,8 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<TokenDto>> Login([FromBody] UserLoginDto userLoginDto,
+    public async Task<ActionResult<TokenDto>> Login(
+        [FromBody] UserLoginDto userLoginDto,
         CancellationToken cancellationToken)
     {
         var input = new LoginUserCommand
@@ -147,7 +161,8 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
 
     [Authorize(Roles = "Admin")]
     [HttpPut("update-role")]
-    public async Task<ActionResult<UserDto>> UpdateRole([FromBody] UserUpdateRoleDto userUpdateRoleDto,
+    public async Task<ActionResult<UserDto>> UpdateRole(
+        [FromBody] UserUpdateRoleDto userUpdateRoleDto,
         CancellationToken cancellationToken)
     {
         var input = new UpdateUserRoleCommand
@@ -164,7 +179,8 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
     }
 
     [HttpPost("refresh-token")]
-    public async Task<ActionResult<TokenDto>> RefreshToken([FromBody] RefreshTokenDto refreshTokenDto,
+    public async Task<ActionResult<TokenDto>> RefreshToken(
+        [FromBody] RefreshTokenDto refreshTokenDto,
         CancellationToken cancellationToken)
     {
         var input = new RegenerateRefreshTokenCommand
@@ -181,7 +197,8 @@ public class UserController(ISender sender, IUserQueries userQueries, IJwtDecode
     }
 
     [HttpDelete("logout")]
-    public async Task<ActionResult<Unit>> Logout([FromBody] RefreshTokenDto refreshTokenDto,
+    public async Task<ActionResult<Unit>> Logout(
+        [FromBody] RefreshTokenDto refreshTokenDto,
         CancellationToken cancellationToken)
     {
         var input = new LogoutCommand

@@ -1,5 +1,4 @@
 using Domain.ArchivedPosts;
-using Domain.Likes;
 using Infrastructure.Persistence.Converters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -16,8 +15,10 @@ public class ArchivedPostConfiguration : IEntityTypeConfiguration<ArchivedPost>
         builder.Property(x => x.ArchivedAt)
             .HasConversion(new DateTimeUtcConverter())
             .HasDefaultValueSql("timezone('utc', now())");
+        
         builder.HasOne(x => x.Post)
             .WithMany(x => x.ArchivedPosts)
-            .HasForeignKey(x => x.PostId);
+            .HasForeignKey(x => x.PostId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

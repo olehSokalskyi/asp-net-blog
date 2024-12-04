@@ -1,4 +1,5 @@
 ﻿using Application.Common.Interfaces.Repositories;
+using Domain.RefreshTokens;
 using Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using Optional;

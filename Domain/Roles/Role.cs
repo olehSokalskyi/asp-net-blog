@@ -1,12 +1,9 @@
-﻿using Domain.Users;
-
-namespace Domain.Roles;
+﻿namespace Domain.Roles;
 
 public class Role
 {
     public RoleId Id { get; private set; }
     public string Name { get; private set; }
-    
     
     private Role(RoleId id, string name)
     {

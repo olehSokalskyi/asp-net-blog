@@ -1,5 +1,5 @@
-using Application.Common.Interfaces;
 using Application.Common.Interfaces.Queries;
+using Application.Common.Interfaces.Repositories;
 using Domain.Likes;
 using Domain.Posts;
 using Domain.Users;

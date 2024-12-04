@@ -1,5 +1,4 @@
 using Application.Common;
-using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
 using Application.Likes.Exceptions;
 using Domain.Likes;
@@ -24,26 +23,19 @@ public class CreateLikeCommandHandler(
     public async Task<Result<Like, LikeException>> Handle(CreateLikeCommand request,
         CancellationToken cancellationToken)
     {
-        try
-        {
-            var userId = new UserId(request.UserId);
-            var postId = new PostId(request.PostId);
-            
-            var user = await userRepository.GetById(userId, cancellationToken);
-            var post = await postRepository.GetById(postId, cancellationToken);
-            
-            return await user.Match(
-                async u => await post.Match(
-                    async p => await CreateEntity(u.Id, p.Id, cancellationToken),
-                    () => Task.FromResult<Result<Like, LikeException>>(
-                        new LikePostNotFoundException(postId))),
+        var userId = new UserId(request.UserId);
+        var postId = new PostId(request.PostId);
+
+        var user = await userRepository.GetById(userId, cancellationToken);
+        var post = await postRepository.GetById(postId, cancellationToken);
+
+        return await user.Match(
+            async u => await post.Match(
+                async p => await CreateEntity(u.Id, p.Id, cancellationToken),
                 () => Task.FromResult<Result<Like, LikeException>>(
-                    new LikeUserNotFoundException(userId)));
-        }
-        catch (Exception exception)
-        {
-            return new LikeUnknownException(LikeId.Empty(), exception);
-        }
+                    new LikePostNotFoundException(postId))),
+            () => Task.FromResult<Result<Like, LikeException>>(
+                new LikeUserNotFoundException(userId)));
     }
 
     private async Task<Result<Like, LikeException>> CreateEntity(

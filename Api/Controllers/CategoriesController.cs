@@ -19,9 +19,11 @@ public class CategoriesController(ISender sender, ICategoryQueries categoryQueri
 
         return entities.Select(CategoryDto.FromDomainModel).ToList();
     }
-    
+
     [HttpGet("{categoryId:guid}")]
-    public async Task<ActionResult<CategoryDto>> GetById([FromRoute] Guid categoryId, CancellationToken cancellationToken)
+    public async Task<ActionResult<CategoryDto>> GetById(
+        [FromRoute] Guid categoryId,
+        CancellationToken cancellationToken)
     {
         var entity = await categoryQueries.GetById(new CategoryId(categoryId), cancellationToken);
 
@@ -29,7 +31,7 @@ public class CategoriesController(ISender sender, ICategoryQueries categoryQueri
             u => CategoryDto.FromDomainModel(u),
             () => NotFound());
     }
-    
+
     [HttpPost]
     public async Task<ActionResult<CategoryDto>> Create(
         [FromBody] CategoryDto request,
@@ -46,7 +48,7 @@ public class CategoriesController(ISender sender, ICategoryQueries categoryQueri
             f => CategoryDto.FromDomainModel(f),
             e => e.ToObjectResult());
     }
-    
+
     [HttpPut]
     public async Task<ActionResult<CategoryDto>> Update(
         [FromBody] CategoryDto request,
@@ -64,9 +66,11 @@ public class CategoriesController(ISender sender, ICategoryQueries categoryQueri
             f => CategoryDto.FromDomainModel(f),
             e => e.ToObjectResult());
     }
-    
+
     [HttpDelete("{categoryId:guid}")]
-    public async Task<ActionResult<CategoryDto>> Delete([FromRoute] Guid categoryId, CancellationToken cancellationToken)
+    public async Task<ActionResult<CategoryDto>> Delete(
+        [FromRoute] Guid categoryId,
+        CancellationToken cancellationToken)
     {
         var input = new DeleteCategoryCommand
         {

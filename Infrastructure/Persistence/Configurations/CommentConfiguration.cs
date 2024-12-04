@@ -18,6 +18,7 @@ public class CommentConfiguration : IEntityTypeConfiguration<Comment>
         builder.Property(x => x.CreatedAt)
             .HasConversion(new DateTimeUtcConverter())
             .HasDefaultValueSql("timezone('utc', now())");
+        
         builder.Property(x => x.UpdatedAt)
             .HasConversion(new DateTimeUtcConverter())
             .HasDefaultValueSql("timezone('utc', now())");

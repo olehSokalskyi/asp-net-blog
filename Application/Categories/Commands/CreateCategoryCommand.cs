@@ -11,7 +11,8 @@ public record CreateCategoryCommand : IRequest<Result<Category, CategoryExceptio
     public required string Name { get; init; }
 }
 
-public class CreateCategoryCommandHandler(ICategoryRepository categoryRepository)
+public class CreateCategoryCommandHandler(
+    ICategoryRepository categoryRepository)
     : IRequestHandler<CreateCategoryCommand, Result<Category, CategoryException>>
 {
     public async Task<Result<Category, CategoryException>> Handle(

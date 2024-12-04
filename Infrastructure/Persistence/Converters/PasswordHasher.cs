@@ -2,7 +2,7 @@
 
 namespace Infrastructure.Persistence.Converters;
 
-public class PasswordHasher: IPasswordHasher
+public class PasswordHasher : IPasswordHasher
 {
     public string HashPassword(string password)
     {

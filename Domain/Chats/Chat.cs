@@ -7,9 +7,11 @@ public class Chat
 {
     public ChatId Id { get; }
     public string Name { get; private set; }
+    
     public DateTime UpdatedAt { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public bool IsGroup { get; private set; }
+    
     public List<User> Users { get; private set; } = new();
     public List<Message> Messages { get; private set; } = new();
 
