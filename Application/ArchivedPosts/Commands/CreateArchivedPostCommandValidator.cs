@@ -7,5 +7,6 @@ public class CreateArchivedPostCommandValidator : AbstractValidator<CreateArchiv
     public CreateArchivedPostCommandValidator()
     {
         RuleFor(x => x.PostId).NotEmpty();
+        RuleFor(x => x.UserId).NotEmpty();
     }
 }
