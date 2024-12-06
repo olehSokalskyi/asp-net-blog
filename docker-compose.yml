@@ -1,26 +1,28 @@
 ﻿services:
-#  api:
-#    image: api
-#    container_name: blog-api
-#    environment:
-#      - ASPNETCORE_ENVIRONMENT=Development
-#      - ConnectionStrings__Default=Server=database;Port=5432;Database=postgres;User Id=postgres;Password=postgres;
-#    depends_on:
-#      - database
-#    build:
-#      context: .
-#      dockerfile: Api/Dockerfile
+  #  api:
+  #    image: api
+  #    container_name: blog-api
+  #    environment:
+  #      - ASPNETCORE_ENVIRONMENT=Development
+  #      - ConnectionStrings__Default=Server=database;Port=5432;Database=postgres;User Id=postgres;Password=postgres;
+  #    depends_on:
+  #      - database
+  #      - redis
+  #    build:
+  #      context: .
+  #      dockerfile: Api/Dockerfile
   database:
     image: postgres
     container_name: blog-postgres
     environment:
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: postgres
-        POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
     ports:
       - "5432:5432"
+  
   redis:
-    image: redis
+    image: redis:latest
     container_name: blog-redis
     ports:
       - "6379:6379"

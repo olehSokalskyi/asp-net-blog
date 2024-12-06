@@ -1,17 +1,26 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 using Application.Common.Interfaces;
 using Domain.Users;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure.Authentication;
 
-public class TokenGenerator: ITokenGenerator
+public class TokenGenerator : ITokenGenerator
 {
+    private readonly string _jwtSecret;
+
+    public TokenGenerator(IConfiguration configuration)
+    {
+        _jwtSecret = configuration["JwtSecret"];
+    }
+    
     public string GenerateToken(User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = "LifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGoodLifeIsGood"u8.ToArray();
+        var key = Encoding.UTF8.GetBytes(_jwtSecret);
 
         var claims = new List<Claim>
         {

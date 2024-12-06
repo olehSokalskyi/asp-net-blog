@@ -13,12 +13,15 @@ public class MessageConfiguration : IEntityTypeConfiguration<Message>
         builder.Property(x => x.Id).HasConversion(x => x.Value, x => new MessageId(x));
 
         builder.Property(x => x.Content).IsRequired().HasColumnType("varchar(255)");
+        
         builder.Property(x => x.CreatedAt)
             .HasConversion(new DateTimeUtcConverter())
             .HasDefaultValueSql("timezone('utc', now())");
+        
         builder.HasOne(x => x.User)
             .WithMany()
             .HasForeignKey(x => x.UserId);
+        
         builder.HasOne(x => x.Chat)
             .WithMany(x => x.Messages)
             .HasForeignKey(x => x.ChatId);

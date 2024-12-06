@@ -10,5 +10,4 @@ public interface ISubscriberQueries
     Task<Option<Subscriber>> GetById(SubscriberId id, CancellationToken cancellationToken);
     Task<IReadOnlyList<Subscriber>> GetByUserId(UserId userId, CancellationToken cancellationToken);
     Task<IReadOnlyList<Subscriber>> GetByFollowUserId(UserId followUserId, CancellationToken cancellationToken);
-
 }

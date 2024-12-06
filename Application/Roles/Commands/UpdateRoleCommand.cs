@@ -1,24 +1,26 @@
 ﻿using Application.Common;
-using Application.Common.Interfaces;
+using Application.Common.Interfaces.Repositories;
 using Application.Roles.Exceptions;
 using Domain.Roles;
 using MediatR;
 
-namespace Application.Roles;
+namespace Application.Roles.Commands;
 
-public class UpdateRoleCommand: IRequest<Result<Role,RoleException>>
+public class UpdateRoleCommand : IRequest<Result<Role, RoleException>>
 {
     public required Guid RoleId { get; init; }
     public required string Name { get; init; }
 }
 
-public class UpdateRoleCommandHandler(IRoleRepository roleRepository) :
-    IRequestHandler<UpdateRoleCommand, Result<Role, RoleException>>
+public class UpdateRoleCommandHandler(
+    IRoleRepository roleRepository) : IRequestHandler<UpdateRoleCommand, Result<Role, RoleException>>
 {
-    public async  Task<Result<Role, RoleException>> Handle(UpdateRoleCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Role, RoleException>> Handle(
+        UpdateRoleCommand request,
+        CancellationToken cancellationToken)
     {
         var existRole = await roleRepository.GetById(new RoleId(request.RoleId), cancellationToken);
-        
+
         return await existRole.Match(
             async r =>
             {
@@ -26,12 +28,14 @@ public class UpdateRoleCommandHandler(IRoleRepository roleRepository) :
                 return await existRoleName.Match(
                     role => Task.FromResult<Result<Role, RoleException>>(new RoleAlreadyExistsException(role.Name)),
                     async () => await UpdateEntity(r, request.Name, cancellationToken));
-
             },
             () => Task.FromResult<Result<Role, RoleException>>(new RoleNotFoundException(new RoleId(request.RoleId))));
     }
-    
-    private async Task<Result<Role,RoleException>> UpdateEntity(Role role, string name, CancellationToken cancellationToken)
+
+    private async Task<Result<Role, RoleException>> UpdateEntity(
+        Role role,
+        string name,
+        CancellationToken cancellationToken)
     {
         try
         {

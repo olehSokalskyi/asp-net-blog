@@ -17,7 +17,8 @@ public record UpdatePostCommand : IRequest<Result<Post, PostException>>
 public class UpdatePostCommandHandler(IPostRepository postRepository)
     : IRequestHandler<UpdatePostCommand, Result<Post, PostException>>
 {
-    public async Task<Result<Post, PostException>> Handle(UpdatePostCommand request,
+    public async Task<Result<Post, PostException>> Handle(
+        UpdatePostCommand request,
         CancellationToken cancellationToken)
     {
         var postId = new PostId(request.PostId);

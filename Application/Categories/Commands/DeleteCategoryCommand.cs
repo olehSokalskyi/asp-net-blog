@@ -11,10 +11,12 @@ public record DeleteCategoryCommand : IRequest<Result<Category, CategoryExceptio
     public required Guid CategoryId { get; init; }
 }
 
-public class DeleteCategoryCommandHandler(ICategoryRepository categoryRepository)
+public class DeleteCategoryCommandHandler(
+    ICategoryRepository categoryRepository)
     : IRequestHandler<DeleteCategoryCommand, Result<Category, CategoryException>>
 {
-    public async Task<Result<Category, CategoryException>> Handle(DeleteCategoryCommand request,
+    public async Task<Result<Category, CategoryException>> Handle(
+        DeleteCategoryCommand request,
         CancellationToken cancellationToken)
     {
         var categoryId = new CategoryId(request.CategoryId);

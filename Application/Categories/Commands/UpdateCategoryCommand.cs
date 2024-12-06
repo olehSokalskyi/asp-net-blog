@@ -13,7 +13,8 @@ public record UpdateCategoryCommand : IRequest<Result<Category, CategoryExceptio
     public required string Name { get; init; }
 }
 
-public class UpdateCategoryCommandHandler(ICategoryRepository categoryRepository)
+public class UpdateCategoryCommandHandler(
+    ICategoryRepository categoryRepository)
     : IRequestHandler<UpdateCategoryCommand, Result<Category, CategoryException>>
 {
     public async Task<Result<Category, CategoryException>> Handle(

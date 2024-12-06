@@ -21,27 +21,21 @@ public class CreateMessageCommandHandler(
     IChatRepository chatRepository)
     : IRequestHandler<CreateMessageCommand, Result<Message, MessageException>>
 {
-    public async Task<Result<Message, MessageException>> Handle(CreateMessageCommand request,
+    public async Task<Result<Message, MessageException>> Handle(
+        CreateMessageCommand request,
         CancellationToken cancellationToken)
     {
-        try
-        {
-            var userId = new UserId(request.UserId);
-            var chatId = new ChatId(request.ChatId);
-            
-            var user = await userRepository.GetById(userId, cancellationToken);
-            var chat = await chatRepository.GetById(chatId, cancellationToken);
-            
-            return await user.Match(
-                async u => await chat.Match(
-                    async c => await CreateEntity(u.Id, c.Id, request.Content, cancellationToken),
-                    () => Task.FromResult<Result<Message, MessageException>>(new MessageChatNotFoundException(chatId))),
-                () => Task.FromResult<Result<Message, MessageException>>(new MessageUserNotFoundException(userId)));
-        }
-        catch (Exception exception)
-        {
-            return new MessageUnknownException(MessageId.Empty(), exception);
-        }
+        var userId = new UserId(request.UserId);
+        var chatId = new ChatId(request.ChatId);
+
+        var user = await userRepository.GetById(userId, cancellationToken);
+        var chat = await chatRepository.GetById(chatId, cancellationToken);
+
+        return await user.Match(
+            async u => await chat.Match(
+                async c => await CreateEntity(u.Id, c.Id, request.Content, cancellationToken),
+                () => Task.FromResult<Result<Message, MessageException>>(new MessageChatNotFoundException(chatId))),
+            () => Task.FromResult<Result<Message, MessageException>>(new MessageUserNotFoundException(userId)));
     }
 
     private async Task<Result<Message, MessageException>> CreateEntity(

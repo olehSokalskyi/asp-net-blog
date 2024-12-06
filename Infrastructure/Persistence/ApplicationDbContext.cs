@@ -7,6 +7,7 @@ using Domain.Genders;
 using Domain.Likes;
 using Domain.Messages;
 using Domain.Posts;
+using Domain.RefreshTokens;
 using Domain.Roles;
 using Domain.Subscribers;
 using Domain.Users;
@@ -28,6 +29,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Like> Likes { get; set; }
     public DbSet<ArchivedPost> ArchivedPosts { get; set; }
     public DbSet<Comment> Comments { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -2,7 +2,12 @@ using Domain.Subscribers;
 
 namespace Api.Dtos;
 
-public record SubscriberDto(Guid? Id, Guid UserId, Guid? FollowUserId, UserDto? FollowUser, DateTime? CreatedAt)
+public record SubscriberDto(
+    Guid? Id,
+    Guid? UserId,
+    Guid? FollowUserId,
+    UserDto? FollowUser,
+    DateTime? CreatedAt)
 {
     public static SubscriberDto FromDomainModel(Subscriber subscriber)
         => new(

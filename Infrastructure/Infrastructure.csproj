@@ -19,6 +19,7 @@
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
       <PackageReference Include="Optional" Version="4.0.0" />
+      <PackageReference Include="StackExchange.Redis" Version="2.8.22" />
     </ItemGroup>
 
     <ItemGroup>

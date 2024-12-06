@@ -1,5 +1,4 @@
 ﻿using Application.Common.Interfaces;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Authentication;
@@ -10,5 +9,6 @@ public static class ConfigureAuthentication
     {
         services.AddScoped<ITokenGenerator, TokenGenerator>();
         services.AddScoped<IJwtDecoder, JwtDecoder>();
+        services.AddScoped<IRefreshTokenGenerator, RefreshTokenGenerator>();
     }
 }

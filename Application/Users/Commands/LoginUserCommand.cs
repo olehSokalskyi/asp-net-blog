@@ -2,47 +2,51 @@
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
 using Application.Users.Exceptions;
+using Application.Users.Models;
 using Domain.Users;
 using MediatR;
 
 namespace Application.Users.Commands;
 
-public class LoginUserCommand : IRequest<Result<string, UserException>>
+public class LoginUserCommand : IRequest<Result<AuthResult, UserException>>
 {
-    public required string email { get; init; }
-    public required string password { get; init; }
+    public required string Email { get; init; }
+    public required string Password { get; init; }
 }
 
 public class LoginUserCommandHandler(
     IUserRepository userRepository,
     ITokenGenerator tokenGenerator,
-    IPasswordHasher passwordHasher)
-    : IRequestHandler<LoginUserCommand, Result<string, UserException>>
+    IPasswordHasher passwordHasher,
+    IRefreshTokenGenerator refreshTokenGenerator,
+    IRefreshTokenRepository refreshTokenRepository)
+    : IRequestHandler<LoginUserCommand, Result<AuthResult, UserException>>
 {
-    public async Task<Result<string, UserException>> Handle(LoginUserCommand request,
+    public async Task<Result<AuthResult, UserException>> Handle(
+        LoginUserCommand request,
         CancellationToken cancellationToken)
     {
-        try
-        {
-            var user = await userRepository.GetByEmail(request.email, cancellationToken);
-            return await user.Match(
-                async u => await Authenticate(u, request.password),
-                () => Task.FromResult<Result<string, UserException>>(new UserNotFoundException(UserId.Empty())));
-        }
-        catch (Exception exception)
-        {
-            return new UserUnknownException(UserId.Empty(), exception);
-        }
+        var user = await userRepository.GetByEmail(request.Email, cancellationToken);
+        return await user.Match(
+            async u => await Authenticate(u, request.Password),
+            () => Task.FromResult<Result<AuthResult, UserException>>(new UserNotFoundException(UserId.Empty())));
     }
 
-    private async Task<Result<string, UserException>> Authenticate(User user, string password)
+    private async Task<Result<AuthResult, UserException>> Authenticate(User user, string password)
     {
         try
         {
             if (passwordHasher.VerifyPassword(password, user.Password))
             {
                 var token = tokenGenerator.GenerateToken(user);
-                return token;
+                var refreshToken =
+                    await refreshTokenRepository.Add(refreshTokenGenerator.Generate(user.Id), CancellationToken.None);
+
+                user.AddRefreshToken(refreshToken);
+                await userRepository.Update(user, CancellationToken.None);
+
+                var authResult = new AuthResult(token, refreshToken.Token);
+                return authResult;
             }
 
             return new UserIncorrectPasswordException(user.Id);

@@ -2,7 +2,11 @@ using Domain.Likes;
 
 namespace Api.Dtos;
 
-public record LikeDto(Guid? Id, Guid UserId, Guid PostId, DateTime? CreatedAt)
+public record LikeDto(
+    Guid? Id,
+    Guid? UserId,
+    Guid? PostId,
+    DateTime? CreatedAt)
 {
     public static LikeDto FromDomainModel(Like like)
         => new(

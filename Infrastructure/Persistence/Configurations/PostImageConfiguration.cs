@@ -12,6 +12,7 @@ public class PostImageConfiguration : IEntityTypeConfiguration<PostImage>
         builder.Property(x => x.Id).HasConversion(x => x.Value, x => new PostImageId(x));
 
         builder.Property(x => x.PostId).HasConversion(x => x.Value, x => new PostId(x));
+        
         builder.HasOne(x => x.Post)
             .WithMany(x => x.Images)
             .HasForeignKey(x => x.PostId)
