@@ -33,12 +33,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasConversion(new DateTimeUtcConverter())
             .HasDefaultValueSql("timezone('utc', now())");
 
-        builder.HasMany(x => x.Chats)
-            .WithMany(x => x.Users)
-            .UsingEntity<Dictionary<string, object>>(
-                "ChatUser",
-                j => j.HasOne<Chat>().WithMany().HasForeignKey("ChatId"),
-                j => j.HasOne<User>().WithMany().HasForeignKey("UserId"));
 
         builder.HasOne(x => x.Role)
             .WithMany()

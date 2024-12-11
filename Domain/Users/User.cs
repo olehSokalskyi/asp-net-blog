@@ -29,7 +29,7 @@ public class User
     public GenderId? GenderId { get; private set; }
     public Gender? Gender { get; }
 
-    public List<Chat> Chats { get; private set; } = new();
+    //public List<Chat> Chats { get; private set; } = new();
     public List<Subscriber> Subscribers { get; private set; } = new();
     public List<Subscriber> Followers { get; private set; } = new();
     public List<RefreshToken> RefreshTokens { get; private set; } = new();
