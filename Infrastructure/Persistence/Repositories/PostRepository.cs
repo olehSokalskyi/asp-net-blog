@@ -29,6 +29,15 @@ public class PostRepository(ApplicationDbContext context) : IPostRepository, IPo
 
         return entity == null ? Option.None<Post>() : Option.Some(entity);
     }
+    
+    public async Task<IReadOnlyList<Post>> GetByUserId(UserId userId, CancellationToken cancellationToken)
+    {
+        return await context.Posts
+            .AsNoTracking()
+            .Include(x => x.User)
+            .Where(s => s.UserId == userId)
+            .ToListAsync(cancellationToken);
+    }
 
     public async Task<Option<Post>> GetByPostAndUserId(
         PostId postId,
