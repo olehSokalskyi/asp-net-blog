@@ -26,4 +26,8 @@
       <ProjectReference Include="..\Domain\Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Persistence\Migrations\ApplicationDbContextModelSnapshot.cs" />
+    </ItemGroup>
+
 </Project>
