@@ -9,8 +9,16 @@
     <ItemGroup>
       <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.2" />
       <PackageReference Include="MediatR" Version="12.4.1" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="6.0.0-preview.4.21253.5" />
+      <PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="8.0.0" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
       <PackageReference Include="Optional" Version="4.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Domain\Domain.csproj" />
     </ItemGroup>
 
 </Project>
